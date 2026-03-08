@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <UserSecretsId>c90bd49f-7d6a-4b4f-aa95-86cee6da657b</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NLog.Web.AspNetCore" />
+    <PackageReference Include="Ocelot" />
+    <PackageReference Include="prometheus-net.AspNetCore" />
+  </ItemGroup>
+</Project>

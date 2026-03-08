@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Approval.API</AssemblyName>
+    <RootNamespace>Approval.API</RootNamespace>
+    <UserSecretsId>8b4d888d-51eb-4d5a-9fd9-9e2c143bf63f</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+    </PackageReference>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\API.Core\API.Core.csproj" />
+    <ProjectReference Include="..\Approval.DAL\Approval.DAL.csproj" />
+    <ProjectReference Include="..\Approval.Manager\Approval.Manager.csproj" />
+  </ItemGroup>
+</Project>

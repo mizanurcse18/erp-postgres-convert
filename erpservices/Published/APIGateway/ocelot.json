@@ -1,0 +1,10 @@
+﻿{
+  "ReRoutes": [],
+  "GlobalConfiguration": {
+    "RequestIdKey": "OcRequestId",
+    "AdministrationPath": "/administration",
+    "ServiceDiscoveryProvider": {
+      "Type": "Wonder"
+    }
+  }
+}

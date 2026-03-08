@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>HRMS.API</AssemblyName>
+    <RootNamespace>HRMS.API</RootNamespace>
+    <UserSecretsId>5b0390c2-80f8-486d-b332-995420198bab</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+    </PackageReference>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\API.Core\API.Core.csproj" />
+    <ProjectReference Include="..\HRMS.DAL\HRMS.DAL.csproj" />
+    <ProjectReference Include="..\HRMS.Manager\HRMS.Manager.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\upload\attachments\" />
+  </ItemGroup>
+</Project>

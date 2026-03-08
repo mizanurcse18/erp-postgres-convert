@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Accounts.API</AssemblyName>
+    <RootNamespace>Accounts.API</RootNamespace>
+    <UserSecretsId>9d7f090c-23a5-4c4c-97d5-2fc53f231886</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+    </PackageReference>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+
+
+
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\API.Core\API.Core.csproj" />
+    <ProjectReference Include="..\Accounts.DAL\Accounts.DAL.csproj" />
+    <ProjectReference Include="..\Accounts.Manager\Accounts.Manager.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+</Project>

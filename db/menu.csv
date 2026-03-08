@@ -1,0 +1,251 @@
+﻿MenuID,ParentID,ApplicationID,ID,Title,Translate,Type,Icon,Url,Badge,Target,Exact,Auth,Parameters,IsVisible,SequenceNo
+3,0,1,applications,Applications,APPLICATIONS,group,apps,NULL,NULL,NULL,1,NULL,NULL,1,1.00
+5,3,1,dashboards,Dashboards,DASHBOARDS,collapse,dashboard,NULL,NULL,NULL,1,NULL,NULL,1,1.10
+6,24,1,attendance-dashboard,Attendance Details,Attendance Details,item,NULL,/apps/dashboards/attendance-dashboard,NULL,NULL,1,NULL,NULL,1,1.11
+8,3,1,calendar,Calendar,CALENDAR,item,today,/apps/calendar,NULL,NULL,1,NULL,NULL,1,2.01
+9,11,1,users,Users,Users,item,account_box,/apps/users/all,NULL,NULL,1,NULL,NULL,1,1.14
+11,3,1,access-control,Access Control,Access Control,collapse,security,NULL,NULL,NULL,1,NULL,NULL,1,1.16
+12,11,1,access-rule,Rule,Rule,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.17
+13,11,1,access-group,Group,Group,collapse,group,NULL,NULL,NULL,1,NULL,NULL,1,1.18
+14,12,1,access-rule-list,Rule List,Rule List,item,list,/apps/security/security-rules/securityRuleList,NULL,NULL,1,NULL,NULL,1,1.20
+15,12,1,access-rule-creation,New Rule,New Rule,item,add_circle,/apps/security/security-rules/securityRule/new,NULL,NULL,1,NULL,NULL,1,1.19
+16,13,1,access-group-creation,New Group,New Group,item,add_circle,/apps/security/security-groups/securityGroup/new,NULL,NULL,1,NULL,NULL,1,1.19
+17,13,1,access-group-list,Group List,Group List,item,list,/apps/security/security-groups/securityGroupList,NULL,NULL,1,NULL,NULL,1,1.19
+18,23,1,person,Person,Person,collapse,person,NULL,NULL,NULL,1,NULL,NULL,0,1.20
+19,18,1,add-person,Add New Person,Add New Person,item,person_add,/apps/security/persons/person/new,NULL,NULL,1,NULL,NULL,0,1.21
+20,18,1,person-list,Person List,Person List,item,list,/apps/security/persons/personList,NULL,NULL,1,NULL,NULL,0,1.22
+21,24,1,employee-attendance-dashboard,Employee's Attendance,Employee's Attendance,item,NULL,/apps/dashboards/employee-attendance-dashboard,NULL,NULL,1,NULL,NULL,1,1.34
+22,3,1,license,License,License,item,card_membership,/pages/license,NULL,NULL,1,NULL,NULL,0,1.23
+23,3,1,hrms,HRMS,HRMS,collapse,group,NULL,NULL,NULL,1,NULL,NULL,1,1.24
+24,23,1,attendance,Attendance,Attendance,collapse,how_to_reg,NULL,NULL,NULL,1,NULL,NULL,1,1.11
+25,24,1,remote-attendance,Remote Attendance,Remote Attendance,item,NULL,/apps/hrms/attendance/remoteAttendance,NULL,NULL,1,NULL,NULL,1,1.26
+26,142,1,hrms-master-settings,HRMS,HRMS,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.26
+27,26,1,department,Department,Department,item,NULL,/apps/hrms/masterdata/department,NULL,NULL,1,NULL,NULL,1,1.26
+28,26,1,designation,Designation,Designation,item,NULL,/apps/hrms/masterdata/designation,NULL,NULL,1,NULL,NULL,1,1.28
+29,26,1,division,Division,Division,item,NULL,/apps/hrms/masterdata/division,NULL,NULL,1,NULL,NULL,1,1.29
+30,23,1,employee,Employee Info,Employee Info,collapse,person,NULL,NULL,NULL,1,NULL,NULL,1,1.30
+31,30,1,add-employee,Add Employee,Add Employee,item,person_add,/apps/hrms/employee/addEmployeeWithPerson/new,NULL,NULL,1,NULL,NULL,1,1.31
+32,30,1,employee-list,Employee List,Employee List,item,list,/apps/hrms/employee/employeeList,NULL,NULL,1,NULL,NULL,1,1.32
+33,24,1,approve-remote-attendance,Approve Attendance,Approve Attendance,item,NULL,/apps/hrms/attendance/approveRemoteAttendance,NULL,NULL,1,NULL,NULL,1,1.33
+34,23,1,hrms-attenance,HR Attendance,HR Attendance,collapse,how_to_reg,NULL,NULL,NULL,1,NULL,NULL,1,1.30
+35,26,1,cluster,Cluster,Cluster,item,NULL,/apps/hrms/masterdata/cluster,NULL,NULL,1,NULL,NULL,1,1.35
+36,26,1,region,Region,Region,item,NULL,/apps/hrms/masterdata/region,NULL,NULL,1,NULL,NULL,1,1.36
+37,26,1,branchinfo,Workstation,Workstation,item,NULL,/apps/hrms/masterdata/workstation,NULL,NULL,1,NULL,NULL,1,1.37
+38,30,1,upcoming-employeelist,Upcoming Employee List,Upcoming Employee List,item,list,/apps/security/persons/unemploymentList,NULL,NULL,1,NULL,NULL,1,1.38
+39,26,1,financialyear,Financial Year,Financial Year,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.39
+40,39,1,financialyear-list,Financial Year List,Financial Year List,item,NULL,/apps/security/masterdata/financialyear/financialYearList,NULL,NULL,1,NULL,NULL,1,1.40
+41,39,1,add-financialyear,Add Financial Year,Add Financial Year,item,NULL,/apps/security/masterdata/financialyear/addFinancialYear/new,NULL,NULL,1,NULL,NULL,1,1.41
+42,26,1,shift,Shift,Shift,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.42
+43,42,1,shift-list,Shift List,Shift List,item,NULL,/apps/hrms/masterdata/shiftList,NULL,NULL,1,NULL,NULL,1,1.43
+44,42,1,shift-new,Add Shift,Add Shift,item,NULL,/apps/hrms/masterdata/shift/new,NULL,NULL,1,NULL,NULL,1,1.44
+45,26,1,leave,Leave,Leave,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.45
+46,45,1,leave-policy,Leave Policy,Leave Policy,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.46
+47,46,1,leavepolicy-list,Leave Policy List,Leave Policy List,item,NULL,/apps/hrms/masterdata/leave/leavepolicyList,NULL,NULL,1,NULL,NULL,1,1.47
+48,46,1,add-leavepolicy,Add Leave Policy,Add Leave Policy,item,NULL,/apps/hrms/masterdata/leave/addLeavepolicy/new,NULL,NULL,1,NULL,NULL,1,1.48
+49,26,1,holiday-new,Holiday,Holiday,item,NULL,/apps/hrms/masterdata/holiday/new,NULL,NULL,1,NULL,NULL,1,1.49
+50,45,1,employee-leave-account,Emp. Leave Account,Emp. Leave Account,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.50
+51,50,1,employeeleaveaccount-list,Emp. Leave Account List,Emp. Leave Account List,item,NULL,/apps/hrms/masterdata/employeeleaveaccount/employeeleaveaccountList,NULL,NULL,1,NULL,NULL,1,1.51
+52,50,1,add-employeeleaveaccount,Add Emp. Leave Account,Add Emp. Leave Account,item,NULL,/apps/hrms/masterdata/employeeleaveaccount/addEmployeeleaveaccount/new,NULL,NULL,1,NULL,NULL,1,1.52
+53,23,1,leave  Managment,Leave Managment,Leave Managment,collapse,how_to_reg,NULL,NULL,NULL,1,NULL,NULL,1,1.53
+54,202,1,leave-application-list,Apply Leave Application,Apply Leave Application,item,NULL,/apps/hrms/leave-management/leave-application/employee/new,NULL,NULL,1,NULL,NULL,1,1.54
+55,67,1,approval-process,Approval Process,Approval Process,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.55
+56,55,1,approvaltype,Approval Type,Approval Type,item,NULL,/apps/approval/approvalType,NULL,NULL,1,NULL,NULL,1,1.56
+57,55,1,approvalstaus,Approval Satus,Approval Satus,item,NULL,/apps/approval/approvalStatus,NULL,NULL,1,NULL,NULL,1,1.57
+58,55,1,approvalpanel,Approval Panel,Approval Panel,item,NULL,/apps/approval/approvalPanel,NULL,NULL,1,NULL,NULL,1,1.58
+59,55,1,employeepanelmap,Emp. Panel Map,Emp. Panel Map,item,NULL,/apps/approval/employeepanelMap,NULL,NULL,1,NULL,NULL,1,1.59
+60,55,1,forwardemployeepanelmap,Fwd. Emp. Panel Map,Fwd. Emp. Panel Map,item,NULL,/apps/approval/forwardemployeepanelMap,NULL,NULL,1,NULL,NULL,1,1.60
+61,67,1,approval-managment,Approval Managment,Approval Managment,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.61
+62,61,1,pending-approval-list,Pending Approval List,Pending Approval List,item,NULL,/apps/approval/approvalRequests,NULL,NULL,1,NULL,NULL,1,1.62
+63,3,1,notification-list,Notifications,Notifications,item,notifications,/apps/Notification,NULL,NULL,1,NULL,NULL,1,0.10
+64,3,1,mail-setup,Mail Setup,Mail Setup,collapse,admin_panel_settings,NULL,NULL,NULL,1,NULL,NULL,1,1.64
+65,64,1,mailconfigure,Mail Configure,Mail Configure,item,NULL,/apps/mailconfigure/mailconfiguration,NULL,NULL,1,NULL,NULL,1,1.65
+66,64,1,mailgroupsetup,Mail Group Setup,Mail Group Setup,item,NULL,/apps/mailconfigure/mailgroupsetup,NULL,NULL,1,NULL,NULL,1,1.66
+67,3,1,approval,Approval,Approval,collapse,done,NULL,NULL,NULL,1,NULL,NULL,1,1.99
+68,23,1,payroll-master,Payroll Master,Payroll Master,collapse,admin_panel_settings,NULL,NULL,NULL,1,NULL,NULL,1,1.68
+69,68,1,walletconfigure,Wallet Configure,Wallet Configure,item,NULL,/apps/hrms/payroll/walletconfigure,NULL,NULL,1,NULL,NULL,1,1.69
+70,68,1,wagecodeconfigure,Wage Code Configure,Wage Code Configure,item,NULL,/apps/hrms/payroll/wagecodeconfigure,NULL,NULL,1,NULL,NULL,1,1.70
+71,68,1,salarycalculationrule,Salary Calc. Rule,Salary Calc. Rule,item,NULL,/apps/hrms/payroll/salarycalculationrule,NULL,NULL,1,NULL,NULL,1,1.71
+72,68,1,taxcalculationrule,Tax Calc. Rule,Tax Calc. Rule,item,NULL,/apps/hrms/payroll/taxcalculationrule,NULL,NULL,1,NULL,NULL,1,1.72
+73,23,1,onboarding,On-Boarding,On-Boarding,collapse,admin_panel_settings,NULL,NULL,NULL,1,NULL,NULL,1,1.73
+74,30,1,onboarding,On-Boarding,On-Boarding,item,admin_panel_settings,/apps/hrms/onboarding/sendinvitation,NULL,NULL,1,NULL,NULL,1,1.37
+75,3,1,reports,Reports,Reports,collapse,report,NULL,NULL,NULL,1,NULL,NULL,1,1.75
+76,75,1,self-reportviwer,Self Reports,Self Reports,item,NULL,/apps/reportViewer/selfReportViewer,NULL,NULL,1,NULL,NULL,0,1.76
+77,75,1,hr-reportviwer,HR Reports,HR Reports,item,NULL,/apps/reportViewer/hrReportViewer,NULL,NULL,1,NULL,NULL,0,1.77
+78,3,1,NFA,NFA,NFA,item,assignment,/apps/nfa/nfaBoards,NULL,NULL,1,NULL,NULL,1,2.00
+79,5,1,admindashboard,Admin Dashboard,Admin Dashboard,item,NULL,/apps/dashboards/admin-dashboard,NULL,NULL,1,NULL,NULL,1,1.79
+80,5,1,approvaldashboard,"NFA KPI ",NFA KPI,item,NULL,/apps/dashboards/approval-dashboard,NULL,NULL,1,NULL,NULL,0,1.80
+81,3,1,Tutorial,Tutorial,Tutorial,collapse,list,NULL,NULL,NULL,1,NULL,NULL,1,2.02
+82,81,1,Tutorial List,Tutorial List,Tutorial List,item,NULL,/apps/security/tutorial/tutorialList,NULL,NULL,1,NULL,NULL,1,1.82
+83,81,1,Add Tutorial,Add Tutorial,Add Tutorial,item,NULL,/apps/security/tutorial/addTutorial/new,NULL,NULL,1,NULL,NULL,1,1.83
+84,202,1,Leave Application List,Leave Application List,Leave Application List,item,NULL,/apps/hrms/leave-management/leave-application-list,NULL,NULL,1,NULL,NULL,1,1.84
+85,86,1,Custom Grid,Custom Grid,Custom Grid,item,admin_panel_settings,/apps/shared/CustomGrid,NULL,NULL,1,NULL,NULL,1,1.85
+86,142,1,tools,Tools,Tools,collapse,admin_panel_settings,NULL,NULL,NULL,1,NULL,NULL,1,1.82
+87,86,1,manual-schedule-list,Schedule List,Schedule List,item,schedule,/apps/tools/schedule/manual-schedule-list,NULL,NULL,1,NULL,NULL,1,1.83
+88,3,1,Finance & Accounts,Finance & Accounts,Finance & Accounts,collapse,credit_card,NULL,NULL,NULL,1,NULL,NULL,1,1.88
+89,88,1,claims,Claims,Claims,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.89
+90,89,1,expense-claims,Expense Claim,Expense Claim,item,NULL,/apps/accounts/payments/expense-payments/expensePaymentBoards,NULL,NULL,1,NULL,NULL,1,1.90
+91,88,1,payments,Payments,Payments,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.91
+92,202,1,all-employee-leave-applications,HR All Employee Leave,HR All Employee Leave,item,list,/apps/hrms/leave-management/all-employee-leave-applications,NULL,NULL,1,NULL,NULL,1,1.92
+93,91,1,iou-or-expense-payment,Expense,Expense,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.93
+94,93,1,iou-payment,IOU Payment,IOU Payment,item,NULL,/apps/accounts/payments/iou-or-expense-payment/createIOUPayment/new,NULL,NULL,1,NULL,NULL,1,1.94
+95,93,1,iou-or-expense-payment-list,Payment List,Payment List,item,NULL,/apps/accounts/payments/iou-or-expense-payment/iouOrExpensePaymentList,NULL,NULL,1,NULL,NULL,1,1.96
+96,93,1,expense-payment,Expense Payment,Expense Payment,item,NULL,/apps/accounts/payments/iou-or-expense-payment/createExpensePayment/new,NULL,NULL,1,NULL,NULL,1,1.95
+97,88,1,Budget,Budget,Budget,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.97
+98,97,1,iou-expense-budget,Panel Wise Budget,Panel Wise Budget,item,NULL,/apps/accounts/budget/iouexpensebudget,NULL,NULL,1,NULL,NULL,1,1.98
+99,3,1,scm,SCM,SCM,collapse,shopping_cart,NULL,NULL,NULL,1,NULL,NULL,1,1.99
+100,111,1,supplier,Supplier,Supplier,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.10
+101,100,1,basicinfo,Basic Info,Basic Info,item,NULL,/apps/scm/supplier/basicInfo,NULL,NULL,1,NULL,NULL,1,1.10
+102,99,1,purchase-requisition,"Purchase Requisition ","Purchase Requisition ",collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.10
+103,112,1,itemgroup,Item Group,Item Group,item,NULL,/apps/scm/itemgroup,NULL,NULL,1,NULL,NULL,1,1.10
+104,112,1,itemsubgroup,Item Sub Group,Item Sub Group,item,NULL,/apps/scm/itemsubgroup,NULL,NULL,1,NULL,NULL,1,1.10
+105,112,1,item,Item,Item,item,NULL,/apps/scm/item,NULL,NULL,1,NULL,NULL,1,1.11
+106,111,1,unit,Unit,Unit,item,NULL,/apps/scm/unit,NULL,NULL,1,NULL,NULL,1,1.11
+107,113,1,warehouse,Warehouse,Warehouse,item,NULL,/apps/scm/warehouse,NULL,NULL,1,NULL,NULL,1,1.11
+108,111,1,vainfo,VatInfo,VatInfo,item,NULL,/apps/scm/vainfo,NULL,NULL,1,NULL,NULL,0,1.11
+109,102,1,approved-prlist,Approved PR List,Approved PR List,item,NULL,/apps/scm/po/approvedPRList,NULL,NULL,1,NULL,NULL,1,112.00
+110,115,1,polist,PO List,PO List,item,NULL,/apps/scm/po/poList,NULL,NULL,1,NULL,NULL,1,1.11
+111,142,1,scm-master-settings,SCM,SCM,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.17
+112,111,1,item-settings,item Settings,item Settings,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.13
+113,111,1,warehouse-settings,Warehouse Settings,Warehouse Settings,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.13
+114,102,1,create-purchase-requisition-and-history,PR History,PR History,item,NULL,/apps/scm/purchaseRequisition/listPurchaseRequisition,NULL,NULL,1,NULL,NULL,1,1.11
+115,99,1,purchase-order,"Purchase Order ","Purchase Order ",collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.12
+117,99,1,material-receive,GRN,GRN,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.14
+118,117,1,material-receive-list,GRN List,GRN List,item,NULL,/apps/scm/materialReceive/materialReceiveList,NULL,NULL,1,NULL,NULL,1,1.12
+119,99,1,lnvoice,Invoice,Invoice,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,2.20
+120,119,1,create-lnvoice,Create Invoice,Create Invoice,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.12
+121,120,1,Regular-Inoivce-list,Regular Inovice,Regular Inovice,item,NULL,/apps/scm/invoice/invoice-create/regularInvoiceList,NULL,NULL,1,NULL,NULL,1,1.12
+124,120,1,Advance-Inoivce-list,Advance Inovice,Advance Inovice,item,NULL,/apps/scm/invoice/invoice-create/advanceInvoiceList,NULL,NULL,1,NULL,NULL,1,1.12
+126,91,1,lnvoice-payment,lnvoice Payment,lnvoice Payment,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,2.00
+127,126,1,Create-Invoice-Payment,Create Invoice Payment,Create Invoice Payment,item,NULL,/apps/invoicePayment/invoicePaymentBoards,NULL,NULL,1,NULL,NULL,1,1.12
+128,126,1,Invoice-Payment-List,Invoice Payment List,Invoice Payment List,item,NULL,/apps/invoice-payment/invoicePaymentList,NULL,NULL,1,NULL,NULL,1,1.13
+129,120,1,Created-Inoivce-list,Inovice List,Inovice List,item,NULL,/apps/scm/invoice/invoice-create/createdInvoiceList,NULL,NULL,1,NULL,NULL,1,1.13
+130,99,1,QC,QC,QC,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.13
+131,130,1,approved-po-list,Create QC,Create QC,item,NULL,/apps/scm/po/approvedPOList,NULL,NULL,1,NULL,NULL,1,1.31
+132,130,1,qcList,QC List,QC List,item,NULL,/apps/scm/qc/qcList,NULL,NULL,1,NULL,NULL,1,1.31
+133,138,1,PO Reports,PO Reports,PO Reports,item,NULL,/apps/scm/po/poReportList,NULL,NULL,1,NULL,NULL,1,1.13
+134,67,1,Document Approval,Document Approval,Document Approval,collapse,admin_panel_settings,NULL,NULL,NULL,1,NULL,NULL,1,1.34
+135,134,1,Add Document Approval,Add Document Approval,Add Document Approval,item,NULL,/apps/approval/documentApproval/addDocumentApproval/new,NULL,NULL,1,NULL,NULL,1,1.35
+136,134,1,Document Approval List,Document Approval List,Document Approval List,item,NULL,/apps/approval/documentApproval/documentApprovalList,NULL,NULL,1,NULL,NULL,1,1.36
+137,45,1,LeaveCategory,Leave Category,Leave Category,item,NULL,/apps/hrms/masterdata/leave/leaveCategory,NULL,NULL,1,NULL,NULL,1,1.14
+138,75,1,SCM Reports,SCM Reports,SCM Reports,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.14
+139,138,1,QC OR GRN Reports,QC OR GRN Reports,QC OR GRN Reports,item,NULL,/apps/scm/allScmReports/allScmReportList,NULL,NULL,1,NULL,NULL,1,1.14
+140,11,1,access-control-users,Access Control Users,Access Control Users,item,account_box,/apps/security/access-control-users/all,NULL,NULL,1,NULL,NULL,1,1.14
+141,111,1,assessment-member,Assessment-Member,Assessment-Member,item,NULL,/apps/scm/assessmentMember,NULL,NULL,1,NULL,NULL,1,1.14
+142,3,1,master-settings,Master Settings,Master Settings,collapse,admin_panel_settings,NULL,NULL,NULL,1,NULL,NULL,1,2.00
+143,26,1,jobgrade,Job Grade,Job Grade,item,NULL,/apps/hrms/masterdata/jobGrade,NULL,NULL,1,NULL,NULL,1,1.50
+144,99,1,material-requisiiton,Material Requisiiton,Material Requisiiton,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,0,1.09
+145,144,1,approved-material-requisiiton,Approved MR List,Approved MR List,item,NULL,/apps/scm/materialRequisition/approvedMRList,NULL,NULL,1,NULL,NULL,0,145.00
+146,144,1,create-material-requisition-and-history,Create MR And History,Create MR And History,item,NULL,/apps/scm/materialRequisition/materialRequisitionBoards,NULL,NULL,1,NULL,NULL,0,144.00
+147,130,1,allQCList,All QC List,All QC List,item,NULL,/apps/scm/qc/allQCList,NULL,NULL,1,NULL,NULL,1,1.31
+148,117,1,allGRNList,All GRN List,All GRN List,item,NULL,/apps/scm/materialReceive/allGRNList,NULL,NULL,1,NULL,NULL,1,1.14
+149,91,1,Taxation Vetting,Taxation Vetting,Taxation Vetting,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.93
+150,149,1,Approved-Invoice-list,Approved Invoice List,Approved Invoice List,item,NULL,/apps/taxation-vetting/approvedInvoiceList,NULL,NULL,1,NULL,NULL,1,1.96
+151,142,1,accounts-master-settings,Finance & Accounts,Finance & Accounts,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.27
+152,151,1,vtDeduction-new,Deduction Source,Deduction Source,item,NULL,/apps/accounts/masterdata/deductionSource,NULL,NULL,1,NULL,NULL,1,1.49
+153,149,1,Taxation Vetting List,Taxation Vetting List,Taxation Vetting List,item,NULL,/apps/accounts/payments/taxation-vetting/taxation-vetting-list,NULL,NULL,1,NULL,NULL,1,1.99
+154,3,1,Micro-Site,Micro-Site,More Services,collapse,developer_board,NULL,NULL,NULL,1,NULL,NULL,1,2.01
+155,154,1,Categories-And-Services,Categories & Services,Categories & Services,item,NULL,/apps/microSite/categoriesAndServices,NULL,NULL,1,NULL,NULL,1,2.02
+156,157,1,create-taxation-payment,Create Taxation Payment,Create Taxation Payment,item,NULL,/apps/accounts/payments/taxation-payment/createTaxationPayment/new,NULL,NULL,1,NULL,NULL,1,2.03
+157,91,1,taxation-payment,Taxation Payment,Taxation Payment,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,2.04
+158,157,1,taxation-vetting-payment-list,Taxation Vetting Payment List,Taxation Vetting Payment List,item,NULL,/apps/accounts/payments/taxation-payment/taxation-vetting-payment-list,NULL,NULL,1,NULL,NULL,1,2.05
+159,154,1,Microsite-Approval-List,Microsite Approval List,Microsite Approval List,item,NULL,/apps/microSite/microSiteList,NULL,NULL,1,NULL,NULL,1,2.06
+160,3,1,common,Common,Common,collapse,build_circle,NULL,NULL,NULL,1,NULL,NULL,1,2.07
+161,75,1,Accounts and Finance,Accounts and Finance,Accounts and Finance,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,2.08
+162,161,1,Claim and Payment,Claim and Payment,Claim and Payment,item,report,/apps/reportViewer/financeAndAccounts/claimAndPayment,NULL,NULL,1,NULL,NULL,1,2.09
+163,23,1,employeeDirectory,Employee Directory,Employee Directory,item,list,/apps/hrms/common/employeeDirectoryList,NULL,NULL,1,NULL,NULL,1,1.30
+164,75,1,hrms,HRMS,HRMS,collapse,,NULL,NULL,NULL,1,NULL,NULL,1,2.11
+165,24,1,Attendance-Report,Attendance Report,Attendance Report,item,,/apps/reportViewer/hrms/attendanceReport,NULL,NULL,1,NULL,NULL,1,1.35
+166,23,1,Profile Update,Profile Update Status,Profile Update Status,item,list,/apps/security/profileUpdate/myProfileUpdateList,NULL,NULL,1,NULL,NULL,1,2.13
+167,166,1,Pending Profile,Pending Profile,Pending Profile,item,NULL,/apps/security/profileUpdate/myProfileUpdateList,NULL,NULL,1,NULL,NULL,1,2.14
+169,168,1,add-document-approval-template,Add Document Approval Template,Add Document Approval Template,item,NULL,/apps/approval/documentApprovalTemplate,NULL,NULL,1,NULL,NULL,1,2.16
+170,23,1,Nagad-Payroll,Nagad Payroll,Nagad Payroll,collapse,list,NULL,NULL,NULL,1,NULL,NULL,1,2.17
+171,170,1,Download PaySlip,Download PaySlip,Download PaySlip,item,NULL,/apps/hrms/payroll/payslip/downloadPayslip,NULL,NULL,1,NULL,NULL,1,2.18
+172,151,1,cheque-book-entry,Cheque Book Entry,Cheque Book Entry,item,NULL,/apps/accounts/masterdata/chequeBookEntry,NULL,NULL,1,NULL,NULL,1,1.50
+173,142,1,Document Management,Document Management,Document Management,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.34
+174,173,1,add-document-approval-template,Add Template,Add Template,item,NULL,/apps/approval/documentApprovalTemplate,NULL,NULL,1,NULL,NULL,1,1.36
+175,23,1,HrSupport,HR Support,HR Support,collapse,list,NULL,NULL,NULL,1,NULL,NULL,1,2.18
+176,187,1,Exit Clearance,Exit Clearance,Exit Clearance,collapse,list,NULL,NULL,NULL,1,NULL,NULL,1,1.20
+177,187,1,ExitInterview,Exit Interview,Exit Interview,collapse,list,NULL,NULL,NULL,1,NULL,NULL,1,1.10
+178,176,1,Add Exit Clearance,Add Exit Clearance,Add Exit Clearance,item,add_circle,/apps/hrms/hrSupport/accessDeactivation/addAccessDeactivation/new,NULL,NULL,1,NULL,NULL,1,1.10
+179,176,1,Exit Clearance List,Exit Clearance List,Exit Clearance List,item,list,/apps/hrms/hrSupport/accessDeactivation/accessDeactivationList,NULL,NULL,1,NULL,NULL,1,1.19
+180,177,1,AddExitInterview,Add Exit Interview,Add Exit Interview,item,add_circle,/apps/hrms/hrSupport/exitInterview/addExitInterview/new,NULL,NULL,1,NULL,NULL,1,1.10
+181,177,1,ExitInterviewList,Exit Interview List,Exit Interview List,item,list,/apps/hrms/hrSupport/exitInterview/exitInterviewList,NULL,NULL,1,NULL,NULL,1,1.20
+182,176,1,AccessDeactivationDivisionClearenceList,DivisionClearence List,Division Clearence List,item,list,/apps/hrms/hrSupport/accessDeactivation/divisionClearenceList,NULL,NULL,1,NULL,NULL,1,1.20
+183,175,1,Letter & Certificate,Letter & Certificate,Letter & Certificate,collapse,admin_panel_settings,NULL,NULL,NULL,1,NULL,NULL,1,2.08
+184,183,1,Request Letter & Certificate,Request Letter & Certificate,Request Letter & Certificate,item,NULL,/apps/approval/hrDocumentApproval/addHRDocumentApproval/new,NULL,NULL,1,NULL,NULL,1,2.09
+185,183,1,Letter & Certificate Approval,Letter & Certificate Approval,Letter & Certificate Approval,item,NULL,/apps/approval/hrDocumentApproval/hrDocumentApprovalList,NULL,NULL,1,NULL,NULL,1,2.10
+186,26,1,DivisionDepartmentSetupList,Division/Department Head,Division/Department Head,item,NULL,/apps/hrms/masterdata/divisionDepartmentSetup,NULL,NULL,1,NULL,NULL,1,1.51
+187,175,1,EmployeeExit,Employee Exit,Employee Exit,collapse,list,NULL,NULL,NULL,1,NULL,NULL,1,1.10
+188,151,1,bank-entry,Bank Entry,Bank Entry,item,NULL,/apps/accounts/masterdata/bankEntry,NULL,NULL,1,NULL,NULL,1,1.50
+189,99,1,SCC,SCC,SCC,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.15
+190,189,1,approved-po-list,Create SCC,Create SCC,item,NULL,/apps/scm/scc/approvedPOList,NULL,NULL,1,NULL,NULL,1,2.21
+191,189,1,sccList,SCC List,SCC List,item,NULL,/apps/scm/scc/sccList,NULL,NULL,1,NULL,NULL,1,2.22
+192,161,1,SOA,Statement of Affairs,Statement of Affairs,item,NULL,/apps/reportViewer/SOA,NULL,NULL,1,NULL,NULL,1,1.10
+193,26,1,exit-interview-setup,Exit Interview Setup,Exit Interview Setup,item,NULL,/apps/hrms/masterdata/exitInterviewSetup,NULL,NULL,1,NULL,NULL,1,1.51
+194,120,1,Regular-Inoivce-scc-list,Regular Inovice Scc,Regular Inovice Scc,item,NULL,/apps/scm/invoice/invoice-create/regularInvoiceSccList,NULL,NULL,1,NULL,NULL,1,1.15
+195,161,1,all-vendor-payment,All Vendor Payment,All Vendor Payment,item,report,/apps/reportViewer/financeAndAccounts/AllVendorPayment,NULL,NULL,1,NULL,NULL,1,2.09
+196,53,1,Annual Leave Encashment,Annual Leave Encashment,Annual Leave Encashment,collapse,null,NULL,NULL,NULL,1,NULL,NULL,1,2.34
+197,196,1,Create Encashment Window,Create Encashment Window,Create Encashment Window,item,NULL,/apps/hrms/leave-encashment/leave-encashment-window/createLeaveEncashmentWindow/new,NULL,NULL,1,NULL,NULL,1,1.10
+198,196,1,ApplyLeaveEncashment,Apply Leave Encashment,Apply Leave Encashment,item,NULL,/apps/hrms/leave-encashment/leave-encashment-application/new,NULL,NULL,1,NULL,NULL,1,1.30
+200,196,1,leave-encashment-history,Leave Encashment History,Leave Encashment History,item,NULL,/apps/hrms/leave-management/leave-encashment/annual-leave-encashment-history,NULL,NULL,1,NULL,NULL,1,1.20
+201,196,1,leave-encashment-approval-list,Leave Encashment Approval List,Leave Encashment Approval List,item,NULL,/apps/hrms/leave-encashment/leave-encashment-approval/encashmentApprovalList,NULL,NULL,1,NULL,NULL,1,1.40
+202,53,1,leave-application,Leave Application,Leave Application,collapse,how_to_reg,NULL,NULL,NULL,1,NULL,NULL,1,1.53
+203,170,1,Document-Upload-add,Add Document Upload,Add Document Upload,item,add_circle,/apps/hrms/payroll/documentUpload/addDocumentUpload/new,NULL,NULL,1,NULL,NULL,1,1.10
+204,170,1,Document-Upload-list,Document Upload List,Document Upload List,item,list,/apps/hrms/payroll/documentUpload/documentUploadList,NULL,NULL,1,NULL,NULL,1,1.11
+205,170,1,hod-document-upload-list,"HOD Document Upload List ",HOD Document Upload List,item,NULL,/apps/hrms/payroll/documentUpload/listDocumentUploadForHOD,NULL,NULL,1,NULL,NULL,1,3.00
+206,3099,1,add-person,Add New Person with emp,Add New Person with emp,item,person_add,/apps/hrms/employee/addEmployeeWithPerson/new,NULL,NULL,1,NULL,NULL,0,1.21
+207,3,1,business-support,Business Support,Business Support,collapse,shopping_cart,NULL,NULL,NULL,1,NULL,NULL,1,1.30
+208,207,1,support-request,Support Request,Support Request,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.31
+209,222,1,Create-Support-Request,Create Support Request,Create Support Request,item,add_circle,/apps/adminSupport/requestSupport/addSupportRequest/Self/new,NULL,NULL,1,NULL,NULL,1,1.32
+210,222,1,Support-Request-List,Support Request List,Support Request List,item,list,/apps/adminSupport/requestSupport/supportRequestList,NULL,NULL,1,NULL,NULL,1,1.33
+211,55,1,employee-panel-map-config,Emp. Panel Map Config,Emp. Panel Map Config,item,NULL,/apps/approval/employeepanelmapConfig,NULL,NULL,1,NULL,NULL,1,2.01
+212,138,1,invoice-reports,Invoice Reports,Invoice Reports,item,NULL,/apps/scm/invoice/invoice-create/invoiceReportList,NULL,NULL,1,NULL,NULL,1,1.15
+213,102,1,Create PR,Create PR,Create PR,item,NULL,/apps/scm/purchaseRequisition/createPurchaseRequisition/new,NULL,NULL,1,NULL,NULL,1,1.10
+214,67,1,DOA,DOA,DOA,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.10
+215,214,1,Create DOA,Create DOA,Create DOA,item,NULL,/apps/approval/doa/createDoa/emp/new,NULL,NULL,1,NULL,NULL,1,1.11
+216,214,1,DOA List,DOA List,DOA List,item,NULL,/apps/approval/doa/doa-list/emp,NULL,NULL,1,NULL,NULL,1,1.12
+217,214,1,Create DOA(HR),Create DOA(HR),Create DOA(HR),item,NULL,/apps/approval/doa/createDoa/hr/new,NULL,NULL,1,NULL,NULL,1,1.13
+218,214,1,DOA List(HR),DOA List(HR),DOA List(HR),item,NULL,/apps/approval/doa/doa-list/hr,NULL,NULL,1,NULL,NULL,1,1.14
+219,24,1,Remote-Attendance-list,Remote Attendance List,Remote Attendance List,item,NULL,/apps/hrms/attendance/remoteAttendanceList,NULL,NULL,1,NULL,NULL,1,1.34
+220,223,1,Employee-Support-Request-List,Support Request List,Support Request List,item,list,/apps/adminSupport/requestSupport/employeeSupportRequestList,NULL,NULL,1,NULL,NULL,1,1.35
+221,223,1,Create-Support-Request-Employee,Create Support Request,Create Support Request,item,add_circle,/apps/adminSupport/requestSupport/addSupportRequest/Employee/new,NULL,NULL,1,NULL,NULL,1,1.32
+222,208,1,Self,Self,Self,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.15
+223,208,1,Employee,Employee,Employee,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.15
+225,86,1,system-configuration,System Configuration,System Configuration,item,NULL,/apps/security/masterdata/systemConfiguration/createSystemConfiguration/new,NULL,NULL,1,NULL,NULL,1,1.50
+226,24,1,Attendance-Adherence-Report,Attendance Adherence Report,Attendance Adherence Report,item,,/apps/reportViewer/hrms/attendanceAdherenceReport,NULL,NULL,1,NULL,NULL,1,1.36
+227,53,1,notify-unauthorized-leaves,Notify Unauthorized Leaves,Notify Unauthorized Leaves,item,list,/apps/hrms/leave-management/notify-unauthorized-leaves,NULL,NULL,1,NULL,NULL,1,2.50
+228,189,1,po-list-for-scc,PO List For SCC,PO List For SCC,item,NULL,/apps/scm/scc/poListForSCC,NULL,NULL,1,NULL,NULL,1,1.22
+229,202,1,adjust-employees-leaves,Adjust Employee's Leaves,Adjust Employee's Leaves,item,NULL,/apps/hrms/leave-management/leave-application/hr/new,NULL,NULL,1,NULL,NULL,1,1.54
+230,67,1,approval-Pannel-Window,Approval Pannel Window,Approval Pannel Window,collapse,admin_panel_settings,NULL,NULL,NULL,1,NULL,NULL,1,2.34
+231,230,1,approval-pannel-window-history,Approval Pannel Window History,Approval Pannel Window History,item,NULL,/apps/approval/approvalPanelWindow/approval-pannel-window-history,NULL,NULL,1,NULL,NULL,1,1.03
+232,230,1,create-Approval-Pannel-Window,Create Approval Pannel Window,Create Approval Pannel Window,item,NULL,/apps/approval/approvalPanelWindow/createApprovalPanelWindow/new,NULL,NULL,1,NULL,NULL,1,1.02
+233,91,1,wallet,Wallet,Wallet,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.91
+234,233,1,wallet-list,Wallet List,Wallet List,item,NULL,/apps/accounts/payments/wallet,NULL,NULL,1,NULL,NULL,1,2.00
+235,89,1,disbursement-petty-cash-list,Disbursement Petty Cash List,Disbursement Petty Cash List,item,NULL,/apps/accounts/payments/expense-payments/disbursementPettyCashList,NULL,NULL,1,NULL,NULL,1,1.90
+236,89,1,resubmit-advance-petty-cash-list,Resubmit Advance Petty Cash List,Resubmit Advance Petty Cash List,item,NULL,/apps/accounts/payments/expense-payments/resubmitPettyCashList,NULL,NULL,1,NULL,NULL,1,1.90
+237,88,1,reimbursement,Reimbursement,Reimbursement,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,1.90
+238,237,1,create-PettyCash-Reimburse,Create Petty Cash Reimburse,Create Petty Cash Reimburse,item,NULL,/apps/accounts/payments/pettyCash-reimburse/createPettyCashReimburse/new,NULL,NULL,1,NULL,NULL,1,1.12
+239,237,1,pettyCash-Reimburse-List,Petty Cash Reimburse List,Petty Cash Reimburse List,item,NULL,/apps/accounts/payments/pettyCash-reimburse/pettyCash-reimburse-list,NULL,NULL,1,NULL,NULL,1,1.13
+240,91,1,Petty Cash Payment,Petty Cash Payment,Petty Cash Payment,collapse,NULL,NULL,NULL,NULL,1,NULL,NULL,1,3.00
+241,240,1,approved-reimburse-list,Approved Reimburse List,Approved Reimburse List,item,NULL,/apps/accounts/payments/pettyCashApproved-reimburse/pettyCashApproved-reimburse-list,NULL,NULL,1,NULL,NULL,1,1.96
+242,240,1,petty-cash-payment-list,Petty Cash Payment List,Petty Cash Payment List,item,NULL,/apps/accounts/payments/petty-cash/petty-cash-payment-list,NULL,NULL,1,NULL,NULL,1,1.99
+243,189,1,all-scc-list,All SCC List,All SCC List,item,NULL,/apps/scm/scc/allSCCList,NULL,NULL,1,NULL,NULL,1,2.23
+245,161,1,expense-report,Expense Report,Expense Report,item,NULL,/apps/reportViewer/financeAndAccounts/expenseReport,NULL,NULL,1,NULL,NULL,1,2.09
+279,202,1,Leave Application List New,Leave Application List New,Leave Application List New,item,NULL,/apps/hrms/leave-management/leave-application-list-new,NULL,NULL,1,NULL,NULL,1,1.85
+500,3,1,common-interface,Common Interface,Common Interface,collapse,c,NULL,NULL,NULL,1,NULL,NULL,1,3.10
+501,500,1,menu-interface,menu-interface,Menu,item,menu,/apps/comoninterface/interfaceType/listWithDialog/list/menu,NULL,NULL,1,NULL,NULL,1,3.10
+504,500,1234,1234,Common,Common,item,test,/url/abce,NULL,NULL,0,NULL,NULL,1,6.00
+505,500,1,demo,Demo,DEMO,item,list,/apps/demo/all,NULL,NULL,0,NULL,NULL,1,6.00
+506,500,1,demo-item,Demo-item,DEMO-ITEM,item,list,/apps/demo-item/all,NULL,NULL,0,NULL,NULL,1,7.00
+507,500,1,demo-item-creation,Demo Item Creation,DEMO-ITEM-CREATION,item,add_circle,/apps/demo-item-creation/new,NULL,NULL,0,NULL,NULL,1,7.00
+508,5,1,organogram,Organogram,Organogram,item,NULL,/apps/dashboards/organogram,NULL,NULL,1,NULL,NULL,1,1.80
+1001,3,1,kpi-tools,KPI Tools,KPI Tools,collapse,chart_timelines,NULL,NULL,NULL,1,NULL,NULL,1,2.07
+1002,1001,1,kpi-settings,KPI Settings,Settings,collapse,NULL,,NULL,NULL,1,NULL,NULL,1,2.11
+1003,1002,1,kpi-period-types,KPI Period Types,Period Types,item,NULL,/apps/kpi-tools/periodTypes,NULL,NULL,1,NULL,NULL,1,2.07
+1006,1001,1,kpi-windows,KPI WIndows,KPI Windows,item,NULL,/apps/kpi-tools/windows/windowList,NULL,NULL,1,NULL,NULL,1,2.08
+1007,1001,1,kpi-window-employees,KPI Evaluation Employees,KPI Evaluation Employees,item,NULL,/apps/kpi-tools/windows/windowEvaluationEmployeeList,NULL,NULL,1,NULL,NULL,1,2.09
+1008,1001,1,kpi-window-employees,KPI Window Employees,KPI Window Employees,item,NULL,/apps/kpi-tools/windows/windowEmployeeList,NULL,NULL,1,NULL,NULL,1,2.09
+1009,1001,1,organization-hierarchy,Organization Hierarchy,Organization Hierarchy,item,NULL,/apps/kpi-tools/organizationHierarchy,NULL,NULL,1,NULL,NULL,1,2.10
+1011,1002,1,kpi-master-settings,KPI Master Settings,KPI Master Settings,item,NULL,/apps/kpi-tools/masterSettings,NULL,NULL,1,NULL,NULL,1,2.11
+1012,1001,1,kpi-statistics,KPI Statistics,KPI Statistics,item,NULL,/apps/kpi-tools/kpiStatics,NULL,NULL,1,NULL,NULL,1,2.07
+1013,1001,1,kpi-profile,KPI Profile,KPI Profile,item,NULL,/apps/kpi-tools/profile,NULL,NULL,1,NULL,NULL,1,2.07

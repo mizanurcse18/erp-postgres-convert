@@ -1,0 +1,21 @@
+﻿using Manager.Core.Mapper;
+using DAL.Core.EntityBase;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Manager.Core.CommonDto
+{
+    public class NomineeCoreDto
+    {
+        public int NIID { get; set; }
+        public string NomineeName { get; set; }
+        public string NomineeAddress { get; set; }
+        public string RelationShip { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public decimal Percentage { get; set; }
+        public string NomineeBehalf { get; set; }
+        public int PersonID { get; set; }
+        public bool isDelete { get; set; }
+    }
+}

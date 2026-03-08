@@ -1,0 +1,68 @@
+[
+  {
+    "ServiceId": "0c8ab7a3-9083-4ab1-9e0b-95191d572826",
+    "Name": "security",
+    "Host": "localhost",
+    "Port": 5002
+  },
+  {
+    "ServiceId": "8a65bff3-50d3-460d-a58d-fe535e8a2827",
+    "Name": "hrms",
+    "Host": "localhost",
+    "Port": 5003
+  },
+  {
+    "ServiceId": "8a65bff3-50d3-460d-a58d-fe535e8a2828",
+    "Name": "approval",
+    "Host": "localhost",
+    "Port": 5004
+  },
+  {
+    "ServiceId": "8a65bff3-50d3-460d-a58d-fe535e8a2829",
+    "Name": "mail",
+    "Host": "localhost",
+    "Port": 5005
+  },
+  {
+    "ServiceId": "8a65bff3-50d3-460d-a58d-fe535e8a2288",
+    "Name": "accounts",
+    "Host": "localhost",
+    "Port": 5006
+  },
+  {
+    "ServiceId": "8a65bff3-50d3-460d-a58d-fe535e8a233",
+    "Name": "scm",
+    "Host": "localhost",
+    "Port": 5007
+  },
+  {
+    "ServiceId": "8a65bff3-50d3-460d-a58d-fe535e8a234",
+    "Name": "microsite",
+    "Host": "localhost",
+    "Port": 5008
+  },
+  {
+    "ServiceId": "8a65bff3-50d3-460d-a58d-fe535e8a432",
+    "Name": "kpi",
+    "Host": "localhost",
+    "Port": 81
+  },
+  {
+    "ServiceId": "8a65bff3-50d3-460d-a58d-fe535e8a464",
+    "Name": "external",
+    "Host": "localhost",
+    "Port": 5009
+  },
+  {
+    "ServiceId": "8a65bff3-50d3-460d-a58d-5e8a464fe53",
+    "Name": "oracle",
+    "Host": "localhost",
+    "Port": 5010
+  },
+  {
+    "ServiceId": "8a65bff3-50d3-a58d-460d-5e8a464fe53",
+    "Name": "dcm",
+    "Host": "localhost",
+    "Port": 5011
+  }
+]

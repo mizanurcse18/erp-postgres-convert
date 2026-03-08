@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Mail.API</AssemblyName>
+    <RootNamespace>Mail.API</RootNamespace>
+    <UserSecretsId>eb2d3ade-870e-4e17-b6be-95eb42194967</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+    </PackageReference>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\API.Core\API.Core.csproj" />
+    <ProjectReference Include="..\Mail.DAL\Mail.DAL.csproj" />
+    <ProjectReference Include="..\Mail.Manager\Mail.Manager.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+</Project>
