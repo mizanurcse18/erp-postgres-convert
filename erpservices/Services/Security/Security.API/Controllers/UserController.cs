@@ -467,7 +467,7 @@ namespace Security.API.Controllers
             return OkResult(new
             {
                 securityToken.Payload,
-                menus
+                menus = menus.Result
             });
         }
 

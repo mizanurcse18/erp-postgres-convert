@@ -879,44 +879,47 @@ namespace Security.Manager.Implementations
                     filter = "";
                     break;
                 case "Active":
-                    filter = $@" U.IsActive=1";
+                    filter = $@" U.is_active=TRUE";
                     break;
                 case "InActive":
-                    filter = $@" U.IsActive=0";
+                    filter = $@" U.is_active=FALSE";
                     break;
                 case "Locked":
-                    filter = $@" U.IsLocked=1";
+                    filter = $@" U.is_locked=TRUE";
                     break;
-
                 default:
                     break;
             }
             where = filter.IsNotNullOrEmpty() ? "AND " : "";
             string sql = $@"SELECT DISTINCT
-	                             U.UserID
-	                            ,U.UserName
-	                            ,U.DefaultApplicationID
-	                            ,U.CompanyID
-	                            ,U.IsAdmin
-	                            ,U.IsActive
-	                            ,U.InActiveDate
-	                            ,U.AccessFailedCount
-	                            ,U.TwoFactorEnabled
-	                            ,U.PhoneNumberConfirmed
-	                            ,U.EmailConfirmed
-	                            ,U.PersonID
-	                            ,Img.ImagePath
-	                            ,P.FirstName FullName
-	                            ,ISNULL(P.Email,'') Email
-	                            ,ISNULL(P.Mobile,'') Mobile
-                                ,M.Title AS MenuURL
-                                ,IsForcedLogin
-                            FROM Users U
-                            LEFT JOIN Person P ON P.PersonID = U.PersonID
-                            LEFT JOIN Menu M ON U.DefaultMenuID=M.MenuID
-                            left JOIN (SELECT ImagePath,PersonID FROM PersonImage WHERE IsFavorite=1) Img
-							ON Img.PersonID = P.PersonID
-							Where U.PersonID <> 0 {where} {filter}
+                                U.user_id AS ""UserID"",
+                                U.user_name AS ""UserName"",
+                                U.default_application_id AS ""DefaultApplicationID"",
+                                U.company_id AS ""CompanyID"",
+                                U.is_admin AS ""IsAdmin"",
+                                U.is_active AS ""IsActive"",
+                                U.in_active_date AS ""InActiveDate"",
+                                U.access_failed_count AS ""AccessFailedCount"",
+                                U.two_factor_enabled AS ""TwoFactorEnabled"",
+                                U.phone_number_confirmed AS ""PhoneNumberConfirmed"",
+                                U.email_confirmed AS ""EmailConfirmed"",
+                                U.person_id AS ""PersonID"",
+                                Img.image_path AS ""ImagePath"",
+                                P.first_name AS ""FullName"",
+                                COALESCE(P.email, '') AS ""Email"",
+                                COALESCE(P.mobile, '') AS ""Mobile"",
+                                M.title AS ""MenuURL"",
+                                U.is_forced_login AS ""IsForcedLogin""
+                            FROM users U
+                            LEFT JOIN person P ON P.person_id = U.person_id
+                            LEFT JOIN menu M ON U.default_menu_id = M.menu_id
+                            LEFT JOIN (
+                                SELECT image_path, person_id
+                                FROM person_image
+                                WHERE is_favorite = FALSE
+                            ) Img ON Img.person_id = P.person_id
+                            WHERE U.person_id <> 0
+                            {where} {filter}
                             ";
             var result = UserRepo.LoadGridModel(parameters, sql);
             return result;
@@ -5258,7 +5261,7 @@ namespace Security.Manager.Implementations
 
         public async Task<List<Dictionary<string, object>>> GetBlackListToken(string token)
         {
-            string commentSql = @$"SELECT * FROM UserTokenBlackList WHERE Token='{token}'";
+            string commentSql = @$"SELECT * FROM user_token_black_list WHERE Token='{token}'";
 
             var list = UserRepo.GetDataDictCollection(commentSql).ToList();
 

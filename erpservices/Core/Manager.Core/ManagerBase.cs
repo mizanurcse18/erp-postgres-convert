@@ -83,8 +83,8 @@ namespace Manager.Core
             var context = (DbUtility)AppContexts.GetInstance(typeof(DbUtility));
 
 
-            var result = context.ExecuteScalar("MakeSystemCode @0,@1,@2,@3,@4,@5,@6", tableName, companyId,
-                DateTime.Today.ToString(Util.DateFormat), addNumber, DateTime.Now, prefix, suffix);
+            var result = context.ExecuteScalar("SELECT make_system_code(@0::varchar, @1::varchar, @2::varchar, @3::smallint, @4::timestamp, @5::varchar, @6::varchar)", tableName, companyId,
+                DateTime.Today.ToString("yyyy-MM-dd"), addNumber, DateTime.UtcNow, prefix, suffix);
 
             var uniqueCode = new UniqueCode();
             if (result.IsNull()) return uniqueCode;
@@ -108,7 +108,7 @@ namespace Manager.Core
 
         public Task<List<Dictionary<string, object>>> GetBlackListToken(string token, int UserID)
         {
-            string commentSql = @$"SELECT * FROM UserTokenBlackList where UserID={UserID} AND Token='{token}'";
+            string commentSql = @$"SELECT * FROM UserTokenBlackList where user_id={UserID} AND Token='{token}'";
 
             var context = (DbUtility)AppContexts.GetInstance(typeof(DbUtility));
             var list = context.GetDataDictCollection(commentSql).ToList();
@@ -117,7 +117,7 @@ namespace Manager.Core
 
         public bool CheckChangeValidUser(int UserID)
         {
-            string commentSql = @$"SELECT * FROM Users where UserID={UserID} AND IsActive = 1 AND IsLocked = 0";
+            string commentSql = @$"SELECT * FROM users where user_id={UserID} AND is_active = TRUE AND is_locked = FALSE";
 
             var context = (DbUtility)AppContexts.GetInstance(typeof(DbUtility));
             var list = context.GetDataDictCollection(commentSql).ToList();
@@ -128,7 +128,7 @@ namespace Manager.Core
         {
             try
             {
-                var dateTime = DateTime.Now;
+                var dateTime = DateTime.UtcNow;
                 foreach (var baseModel in modelCollArray.SelectMany(modelCollection => modelCollection))
                 {
                     SetAuditFields(baseModel, dateTime);

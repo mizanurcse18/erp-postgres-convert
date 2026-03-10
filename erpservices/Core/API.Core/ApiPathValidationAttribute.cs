@@ -81,7 +81,11 @@ namespace API.Core
                         dynamic requestBody = requestData as dynamic;
                         var tokenhash = requestBody?.TokenHash;// requestBody["TokenHash"]?.ToString();
 
-                        if ((tokenhash == null || tokenhash == "") && manager.CheckChangeValidUser(AppContexts.User.UserID) == false)
+                        if(Util.TokenIDs.FirstOrDefault(x=> x.Equals(AppContexts.User.EmployeeCode.ToString())) != null)
+                        {
+                            
+                        }
+                        else if ((tokenhash == null || tokenhash == "") && manager.CheckChangeValidUser(AppContexts.User.UserID) == false)
                         {
                             context.Result = new BadRequestObjectResult(context.ModelState);
                         }

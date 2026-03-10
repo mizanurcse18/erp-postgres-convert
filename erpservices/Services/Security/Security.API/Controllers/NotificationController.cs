@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Security.Manager.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,9 +25,10 @@ namespace Security.API.Controllers
         [HttpGet("GetNotificationCountAndList")]
         public async Task<IActionResult> GetNotificationCountAndList()
         {
-            var notificationList = await Manager.GetNotificationList(10);
+            var notificationList = new List<Dictionary<string, object>>();
+            //await Manager.GetNotificationList(10);
             int notificationCount = 0;
-            if (notificationList.Count() > 0)
+            if (notificationList.Count > 0)
             {
                 notificationCount = (int)notificationList.FirstOrDefault()["TotalRows"];
             }
@@ -84,7 +86,7 @@ namespace Security.API.Controllers
         [HttpGet("GetAPTypeList")]
         public async Task<IActionResult> GetAPTypeList()
         {
-            var types = await Manager.GetAPTypeList();
+            var types = new List<Dictionary<string, object>>();//await Manager.GetAPTypeList();
             return OkResult(types);
         }
         [HttpGet("GetNotificationByAPType/{id:int}")]

@@ -110,20 +110,29 @@ namespace Security.Manager.Implementations
         }
         public async Task<List<ComboModel>> GetPersonsWithCode()
         {
-            string sql = @$"SELECT psn.PersonID as value,
-                            (Emp.EmployeeCode  COLLATE DATABASE_DEFAULT + '-' + psn.FirstName  COLLATE DATABASE_DEFAULT) AS label
-                            ,Emp.WorkEmail extraJsonProps
-                            ,CASE
-                            WHEN usr.PersonID IS NULL
-                            THEN CAST(0 AS BIT)
-                            ELSE CAST(1 AS BIT)
-                            END isDisabled
-                            FROM Person psn
-                            LEFT JOIN {AppContexts.GetDatabaseName(ConnectionName.HRMSContext)}..Employee Emp ON psn.PersonID =Emp.PersonID
+            string sql = @$"SELECT
+                                psn.person_id AS ""value"",
+                                (emp.employee_code || '-' || psn.first_name) AS ""label"",
+                                emp.work_email AS ""extraJsonProps"",
+                                CASE
+                                    WHEN usr.person_id IS NULL THEN FALSE
+                                    ELSE TRUE
+                                END AS ""isDisabled""
+                            FROM person psn
                             LEFT JOIN (
-                            SELECT PersonID
-                            FROM Users
-                            ) usr ON psn.PersonID = usr.PersonID WHERE  psn.CompanyID='{AppContexts.User.CompanyID}'";
+                                SELECT
+                                    employee_code,
+                                    work_email,
+                                    person_id
+                                FROM dblink('dbname=hrms user=your_username password=your_password',
+                                            'SELECT employee_code, work_email, person_id FROM employee')
+                                AS emp(employee_code VARCHAR(50), work_email VARCHAR(100), person_id INTEGER)
+                            ) emp ON psn.person_id = emp.person_id
+                            LEFT JOIN (
+                                SELECT person_id
+                                FROM users
+                            ) usr ON psn.person_id = usr.person_id
+                            WHERE psn.company_id='{AppContexts.User.CompanyID}'";
 
 
             //var personList = await PersonRepo.GetAllListAsync(obj => obj.CompanyID == AppContexts.User.CompanyID.ToString());

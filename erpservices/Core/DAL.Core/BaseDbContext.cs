@@ -765,7 +765,7 @@ namespace DAL.Core
                     for (int i = 0; i < sortNameArray.Length; i++)
                     {
                         if (sortOrderArray[i].IsNullOrEmpty()) continue;
-                        order += $"{sortNameArray[i]} {sortOrderArray[i]}" + ", ";
+                        order += $"\"{sortNameArray[i]}\" {sortOrderArray[i]}" + ", ";
                     }
 
                     order = "ORDER BY " + order.TrimEnd(' ').TrimEnd(',');
@@ -774,7 +774,7 @@ namespace DAL.Core
 
             if (order.IsNullOrEmpty() && parameters.Sort.IsNotNullOrEmpty())
             {
-                order = $"ORDER BY {parameters.Sort} {parameters.Order}";
+                order = $"ORDER BY \"{parameters.Sort}\" {parameters.Order}";
             }
 
             if (parameters.ServerPagination)
@@ -885,16 +885,16 @@ namespace DAL.Core
                     for (int i = 0; i < sortNameArray.Length; i++)
                     {
                         if (sortOrderArray[i].IsNullOrEmpty()) continue;
-                        order += $"{sortNameArray[i]} {sortOrderArray[i]}" + ", ";
+                        order += $"\"{sortNameArray[i]}\" {sortOrderArray[i]}" + ", ";
                     }
 
-                    order = "ORDER BY " + order.TrimEnd(' ').TrimEnd(',');
+                    order = "ORDER BY \"" + order.TrimEnd(' ').TrimEnd(',') + "\"";
                 }
             }
 
             if (order.IsNullOrEmpty() && parameters.Sort.IsNotNullOrEmpty())
             {
-                order = $"ORDER BY {parameters.Sort} {parameters.Order}";
+                order = $"ORDER BY \"{parameters.Sort}\" {parameters.Order}";
             }
             if (parameters.ServerPagination)
             {

@@ -323,23 +323,17 @@ namespace Security.Manager
 
         public async Task<IEnumerable<Dictionary<string, object>>> GetSecurityGroupMasterListWithDetails()
         {
-            var sql = $@"SELECT 
-	                        SecurityGroupID
-	                        ,m.CompanyID
-	                        ,m.CreatedBy
-	                        ,m.CreatedDate
-	                        --,m.CreatedIP
-	                        --,m.UpdatedBy
-	                        --,m.UpdatedDate
-	                        --,m.UpdatedIP
-	                        --,m.ROWVERSION
-	                        ,m.SecurityGroupName
-	                        ,m.SecGroupDescription
-	                        ,u.UserName CreatedByUser
-                        FROM 
-	                        Security.dbo.SecurityGroupMaster m
-	                        LEFT JOIN Users u on m.CreatedBy = u.UserID
-                            WHERE m.CompanyID = '{AppContexts.User.CompanyID}'";
+            var sql = $@"SELECT
+                            m.security_group_id AS ""SecurityGroupID"",
+                            m.company_id AS ""CompanyID"",
+                            m.created_by AS ""CreatedBy"",
+                            m.created_date AS ""CreatedDate"",
+                            m.security_group_name AS ""SecurityGroupName"",
+                            m.sec_group_description AS ""SecGroupDescription"",
+                            u.user_name AS ""CreatedByUser""
+                        FROM security_group_master m
+                        LEFT JOIN users u ON m.created_by = u.user_id
+                        WHERE m.company_id  = '{AppContexts.User.CompanyID}'";
 
             var listDict = SecurityGroupRepo.GetDataDictCollection(sql);
 

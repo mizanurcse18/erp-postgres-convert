@@ -217,24 +217,23 @@ namespace Security.Manager.Implementations
 
         public async Task<IEnumerable<Dictionary<string, object>>> GetSecurityRuleMasterListWithDetails()
         {
-            var sql = $@"SELECT 
-	                        SecurityRuleID
-	                        ,m.CompanyID
-	                        ,m.CreatedBy
-	                        ,m.CreatedDate
-	                        ,m.CreatedIP
-	                        ,m.UpdatedBy
-	                        ,m.UpdatedDate
-	                        ,m.UpdatedIP
-	                        ,m.ROWVERSION
-	                        ,m.SecurityRuleName
-	                        ,m.SecurityRuleDescription
-	                        ,m.ApplicationID
-	                        ,u.UserName CreatedByUser
-                        FROM 
-	                        Security.dbo.SecurityRuleMaster m
-	                        LEFT JOIN Users u on m.CreatedBy = u.UserID
-                            WHERE m.CompanyID = '{AppContexts.User.CompanyID}'";
+            var sql = $@"SELECT
+                            m.security_rule_id AS ""SecurityRuleID"",
+                            m.company_id AS ""CompanyID"",
+                            m.created_by AS ""CreatedBy"",
+                            m.created_date AS ""CreatedDate"",
+                            m.created_ip AS ""CreatedIP"",
+                            m.updated_by AS ""UpdatedBy"",
+                            m.updated_date AS ""UpdatedDate"",
+                            m.updated_ip AS ""UpdatedIP"",
+                            m.row_version AS ""ROWVERSION"",
+                            m.security_rule_name AS ""SecurityRuleName"",
+                            m.security_rule_description AS ""SecurityRuleDescription"",
+                            m.application_id AS ""ApplicationID"",
+                            u.user_name AS ""CreatedByUser""
+                        FROM security_rule_master m
+                        LEFT JOIN users u ON m.created_by = u.user_id
+                        WHERE m.company_id = '{AppContexts.User.CompanyID}'";
 
             var listDict = SecurityRuleRepo.GetDataDictCollection(sql);
 
