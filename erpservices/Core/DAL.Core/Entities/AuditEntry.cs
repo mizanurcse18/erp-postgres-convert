@@ -34,14 +34,14 @@ namespace DAL.Core.Entities
             var audit = new AuditLog
             {
                 TableName = TableName,
-                AuditDate = DateTime.Now,
+                AuditDate = DateTime.UtcNow,
                 KeyValues = JsonConvert.SerializeObject(KeyValues),
                 OldValues = OldValues.Count.IsZero() ? null : JsonConvert.SerializeObject(OldValues),
                 NewValues = NewValues.Count.IsZero() ? null : JsonConvert.SerializeObject(NewValues),
                 RowState = RowState,
                 CompanyID = currUser.CompanyID,
                 CreatedBy = currUser.UserID,
-                CreatedDate = DateTime.Now,
+                CreatedDate = DateTime.UtcNow,
                 CreatedIP = currUser.IPAddress ?? AppContexts.GetIPAddress()
             };
 

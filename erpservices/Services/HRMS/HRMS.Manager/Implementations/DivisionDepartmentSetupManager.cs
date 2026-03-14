@@ -36,20 +36,45 @@ namespace HRMS.Manager.Implementations
         {
             List<DivisionDepartmentHeadMapDto> bmList = new List<DivisionDepartmentHeadMapDto>();
             
-            string sql = $@"select Div.DivisionID, Div.DivisionCode, Div.DivisionName, ISNULL(BM.DHMapID,0) AS DHMapID, BM.EmployeeID, emp.FullName as EmployeeName, BudgetAmount
-                            from HRMS..Division Div 
-                            LEFT JOIN DivisionHeadMap BM ON Div.DivisionID = BM.DivisionID
-							LEFT JOIN Employee emp ON emp.EmployeeID = BM.EmployeeID
-                            WHERE div.DivisionID in(select DivisionID from Department)
-                            ORDER BY Div.DivisionID ASC";
+            string sql = $@"SELECT
+                                div.division_id AS ""DivisionID"",
+                                div.division_code AS ""DivisionCode"",
+                                div.division_name AS ""DivisionName"",
+                                COALESCE(bm.dhmap_id, 0) AS ""DHMapID"",
+                                bm.employee_id AS ""EmployeeID"",
+                                emp.full_name AS ""EmployeeName"",
+                                bm.budget_amount AS ""BudgetAmount""
+                            FROM
+                                division div
+                            LEFT JOIN
+                                division_head_map bm ON div.division_id = bm.division_id
+                            LEFT JOIN
+                                employee emp ON emp.employee_id = bm.employee_id
+                            WHERE
+                                div.division_id IN (SELECT division_id FROM department)
+                            ORDER BY
+                                div.division_id ASC";
             bmList = DivisionRepo.GetDataModelCollection<DivisionDepartmentHeadMapDto>(sql);
 
-            List<DepartmentChildList> departmentChildLists = DepartmentRepo.GetDataModelCollection<DepartmentChildList>(@$"select D.DepartmentID, D.DepartmentCode, D.DepartmentName,Div.DivisionID, Div.DivisionName,ISNULL(DHM.DepartmentHMapID,0) AS DepartmentHMapID , DHM.EmployeeID, emp.FullName as EmployeeName
-                            from Department D 
-                            LEFT JOIN DepartmentHeadMap DHM ON D.DepartmentID = DHM.DepartmentID
-							LEFT JOIN Division Div ON D.DivisionID = Div.DivisionID
-							LEFT JOIN Employee emp ON emp.EmployeeID = DHM.EmployeeID
-                            ORDER BY D.DivisionID ASC");
+            List<DepartmentChildList> departmentChildLists = DepartmentRepo.GetDataModelCollection<DepartmentChildList>(@$"SELECT
+                                d.department_id AS ""DepartmentID"",
+                                d.department_code AS ""DepartmentCode"",
+                                d.department_name AS ""DepartmentName"",
+                                div.division_id AS ""DivisionID"",
+                                div.division_name AS ""DivisionName"",
+                                COALESCE(dhm.department_hmap_id, 0) AS ""DepartmentHMapID"",
+                                dhm.employee_id AS ""EmployeeID"",
+                                emp.full_name AS ""EmployeeName""
+                            FROM
+                                department d
+                            LEFT JOIN
+                                department_head_map dhm ON d.department_id = dhm.department_id
+                            LEFT JOIN
+                                division div ON d.division_id = div.division_id
+                            LEFT JOIN
+                                employee emp ON emp.employee_id = dhm.employee_id
+                            ORDER BY
+                                d.division_id ASC");
 
             var divList = bmList.Select(x => new DivisionDepartmentHeadMapDto
             {

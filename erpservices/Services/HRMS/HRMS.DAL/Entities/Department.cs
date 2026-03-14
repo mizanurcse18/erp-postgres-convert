@@ -19,6 +19,6 @@ namespace HRMS.DAL.Entities
         [Loggable]
         public string DepartmentCode { get; set; }
         [Loggable]
-        public string DivisionID { get; set; }
+        public int DivisionID { get; set; }
     }
 }

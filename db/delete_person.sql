@@ -1,0 +1,12 @@
+DELETE FROM person_academic_info;
+DELETE FROM person_address_info;
+DELETE FROM person_award_info;
+DELETE FROM person_emergency_contact_info;
+DELETE FROM person_employment_info;
+DELETE FROM person_family_info;
+DELETE FROM person_image;
+DELETE FROM person_professional_certification_info;
+DELETE FROM person_reference_info;
+DELETE FROM person_training_info;
+DELETE FROM person_work_experience;
+DELETE FROM person;

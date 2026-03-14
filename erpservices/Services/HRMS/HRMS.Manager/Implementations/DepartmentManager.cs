@@ -31,19 +31,29 @@ namespace HRMS.Manager.Implementations
 
         public async Task<IEnumerable<Dictionary<string, object>>> GetDepartmentListDic()
         {
-            string sql = $@"SELECT Dept.*, Dv.DivisionName
-	                        ,CASE 
-		                        WHEN Emp.DepartmentID IS NULL
-			                        THEN CAST(1 AS BIT)
-		                        ELSE CAST(0 AS BIT)
-		                        END IsRemovable
-                        FROM Department Dept
-                        LEFT JOIN Division Dv ON Dept.DivisionID = Dv.DivisionID
-                        LEFT JOIN (
-	                        SELECT DISTINCT DepartmentID
-	                        FROM Employment
-	                        ) Emp ON Dept.DepartmentID = Emp.DepartmentID
-                        ORDER BY Dept.DepartmentID DESC";
+            string sql = $@"SELECT
+                                dept.department_id AS ""DepartmentID"",
+                                dept.division_id AS ""DivisionID"",
+                                dept.department_code AS ""DepartmentCode"",
+                                dept.department_name AS ""DepartmentName"",
+                                dv.division_name AS ""DivisionName"",
+                                CASE 
+                                    WHEN emp.department_id IS NULL
+                                        THEN TRUE
+                                    ELSE FALSE
+                                END AS ""IsRemovable""
+                            FROM
+                                department dept
+                            LEFT JOIN
+                                division dv ON dept.division_id = dv.division_id
+                            LEFT JOIN (
+                                SELECT DISTINCT
+                                    department_id
+                                FROM
+                                employment
+                            ) emp ON dept.department_id = emp.department_id
+                            ORDER BY
+                                dept.department_id DESC";
             var listDict = DepartmentRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(listDict);
@@ -51,8 +61,18 @@ namespace HRMS.Manager.Implementations
         public async Task<Dictionary<string, object>> GetDepartment(int DepartmentID)
         {
 
-            string sql = $@"SELECT D.*, Dv.DivisionName FROM Department D 
-                            LEFT JOIN Division Dv ON D.DivisionID = Dv.DivisionID WHERE D.DepartmentID={DepartmentID}";
+            string sql = $@"SELECT
+                                d.department_id AS ""DepartmentID"",
+                                d.division_id AS ""DivisionID"",
+                                d.department_code AS ""DepartmentCode"",
+                                d.department_name AS ""DepartmentName"",
+                                dv.division_name AS ""DivisionName""
+                            FROM
+                                department d
+                            LEFT JOIN
+                                division dv ON d.division_id = dv.division_id
+                            WHERE
+                                d.department_id = {DepartmentID}";
 
             var reg = DepartmentRepo.GetData(sql);
             return await Task.FromResult(reg);
@@ -77,21 +97,21 @@ namespace HRMS.Manager.Implementations
         public Task<DepartmentDto> SaveChanges(DepartmentDto departmentDto)
         {
             //check duplicates
-            var isExistsName = DepartmentRepo.Entities.FirstOrDefault(x => x.DepartmentID != departmentDto.DepartmentID && x.DepartmentName.ToLower() == departmentDto.DepartmentName.ToLower() && x.DivisionID == departmentDto.DivisionID.ToString()).MapTo<Department>();
+            var isExistsName = DepartmentRepo.Entities.FirstOrDefault(x => x.DepartmentID != departmentDto.DepartmentID && x.DepartmentName.ToLower() == departmentDto.DepartmentName.ToLower() && x.DivisionID == departmentDto.DivisionID).MapTo<Department>();
             if (isExistsName.IsNotNull())
             {
                 departmentDto.DepartmentNameError = "Department Name already exists by this division.";
                 return Task.FromResult(departmentDto);
             }
 
-            var isExistsCode = DepartmentRepo.Entities.FirstOrDefault(x => x.DepartmentID != departmentDto.DepartmentID && x.DepartmentCode.ToLower() == departmentDto.DepartmentCode.ToLower() && x.DivisionID == departmentDto.DivisionID.ToString()).MapTo<Department>();
+            var isExistsCode = DepartmentRepo.Entities.FirstOrDefault(x => x.DepartmentID != departmentDto.DepartmentID && x.DepartmentCode.ToLower() == departmentDto.DepartmentCode.ToLower() && x.DivisionID == departmentDto.DivisionID).MapTo<Department>();
             if (isExistsCode.IsNotNull())
             {
                 departmentDto.DepartmentCodeError = "Department Code already exists by this division.";
                 return Task.FromResult(departmentDto);
             }
 
-            var isExistsDiv = DepartmentRepo.Entities.FirstOrDefault(x => x.DepartmentID != departmentDto.DepartmentID && x.DepartmentName.ToLower() == departmentDto.DepartmentName.ToLower() && x.DepartmentCode.ToLower() == departmentDto.DepartmentCode.ToLower() && x.DivisionID == departmentDto.DivisionID.ToString()).MapTo<Department>();
+            var isExistsDiv = DepartmentRepo.Entities.FirstOrDefault(x => x.DepartmentID != departmentDto.DepartmentID && x.DepartmentName.ToLower() == departmentDto.DepartmentName.ToLower() && x.DepartmentCode.ToLower() == departmentDto.DepartmentCode.ToLower() && x.DivisionID == departmentDto.DivisionID).MapTo<Department>();
             if (isExistsDiv.IsNotNull())
             {
                 departmentDto.DepartmentNameError = "Department already exists by this division.";
@@ -315,7 +335,18 @@ namespace HRMS.Manager.Implementations
         public async Task<List<Dictionary<string, object>>> GetExportDepartments(string whereCondition)
         {
             string where = whereCondition.IsNotNullOrEmpty() ? @$"WHERE {whereCondition}" : "";
-            string sql = $@"select dept.DepartmentID, dept.DepartmentName,dept.DepartmentCode,div.DivisionID,div.DivisionName,div.DivisionCode from Department Dept LEFT JOIN Division Div ON Div.DivisionID = Dept.DivisionID {where}";
+            string sql = $@"SELECT
+                                dept.department_id AS ""DepartmentID"",
+                                dept.department_name AS ""DepartmentName"",
+                                dept.department_code AS ""DepartmentCode"",
+                                div.division_id AS ""DivisionID"",
+                                div.division_name AS ""DivisionName"",
+                                div.division_code AS ""DivisionCode""
+                            FROM
+                                department dept
+                            LEFT JOIN
+                                division div ON dept.division_id = div.division_id
+                            {where}";
             var data = DepartmentRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(data.ToList());

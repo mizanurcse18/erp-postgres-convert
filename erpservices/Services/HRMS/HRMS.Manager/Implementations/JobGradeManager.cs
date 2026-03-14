@@ -28,14 +28,21 @@ namespace HRMS.Manager.Implementations
 
         public async Task<IEnumerable<Dictionary<string, object>>> GetJobGradeListDic()
         {
-            string sql = $@"SELECT JG.*,CASE 
-		                        WHEN Emp.JobGradeID<>0
-			                        THEN CAST(0 AS BIT)
-		                        ELSE CAST(1 AS BIT)
-		                        END IsRemovable
-                        FROM JobGrade JG
-						LEFT JOIN Employment Emp ON Emp.JobGradeID=JG.JobGradeID AND Emp.IsCurrent=1
-                        ORDER BY JG.JobGradeID DESC";
+            string sql = $@"SELECT
+                                jg.job_grade_id AS ""JobGradeID"",
+                                jg.job_grade_code AS ""JobGradeCode"",
+                                jg.job_grade_name AS ""JobGradeName"",
+                                CASE 
+                                    WHEN emp.job_grade_id <> 0
+                                        THEN FALSE
+                                    ELSE TRUE
+                                END AS ""IsRemovable""
+                            FROM
+                                job_grade jg
+                            LEFT JOIN
+                                employment emp ON emp.job_grade_id = jg.job_grade_id AND emp.is_current = TRUE
+                            ORDER BY
+                                jg.job_grade_id DESC";
             var listDict = JobGradeRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(listDict);

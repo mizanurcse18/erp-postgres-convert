@@ -16,5 +16,9 @@ namespace Core.AppContexts
         public const string SCMContext = "SCMContext";
         public const string MicroSiteContext = "MicroSiteContext";
         public const string ExternalDBContext = "ExternalDBContext";
+
+        public const string SecurityRemote = "security_remote";
+        public const string HrmsRemote = "hrms_remote";
+        public const string ApprovalRemote = "approval_remote";
     }
 }

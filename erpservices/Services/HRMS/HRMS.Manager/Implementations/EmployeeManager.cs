@@ -144,13 +144,13 @@ namespace HRMS.Manager.Implementations
             switch (parameters.ApprovalFilterData)
             {
                 case "All":
-                    filter = "";
+                    filter = ""; // No WHERE condition
                     break;
                 case "Active":
-                    filter = $@" ISNULL(empl.EmployeeTypeID,0)<>{(int)Util.EmployeeType.Discontinued} ";
+                    filter = $"COALESCE(empl.employee_type_id, 0) <> {(int)Util.EmployeeType.Discontinued}";
                     break;
                 case "InActive":
-                    filter = $@" ISNULL(empl.EmployeeTypeID,0)={(int)Util.EmployeeType.Discontinued} ";
+                    filter = $"COALESCE(empl.employee_type_id, 0) = {(int)Util.EmployeeType.Discontinued}";
                     break;
 
                 default:
@@ -158,40 +158,38 @@ namespace HRMS.Manager.Implementations
             }
             where = filter.IsNotNullOrEmpty() ? "WHERE " : "";
             string sql = $@"SELECT DISTINCT
-	                            Emp.EmployeeID,
-	                            EmployeeCode,
-	                            FullName,
-	                            empl.EmployeeTypeID,
-	                            ISNULL(sv.SystemVariableCode,'') EmployeeStatus,
-	                            ImagePath,
-	                            WorkEmail,
-	                            DateOfJoining,
-								EmployeeStatusID,
-								ISNULL(Emp.EmployeeCode,'')+'-'+ISNULL(Emp.FullName,'') EmployeeNameWithCode,
-								ISNULL(DivisionName,'')+'-'+ISNULL(DepartmentName,'')+'-'+ISNULL(DesignationName,'') EmployeeDivDeptDesg,
-								DivisionName,
-								DepartmentName,
-								DesignationName,
-								ISNULL(Emp.WorkEmail,'')+'-'+ISNULL(Emp.WorkMobile,'') WorkEmailPhone,
-								ISNULL(convert(varchar(20),Emp.DateOfJoining, 105)+'-'+convert(varchar(20),Emp.ConfirmDate, 105),'') DOJCOD,
-								ISNULL(Emp.WorkMobile,'') WorkMobile,
-								--ISNULL(Emp.ConfirmDate,'') ConfirmDate,
-                                CAST(Emp.ConfirmDate AS DATE) ConfirmDate,
-                                emp.PersonID
-                            FROM Employee AS emp
-							LEFT JOIN Employment empl ON empl.EmployeeID = emp.EmployeeID AND IsCurrent = 1
-							LEFT JOIN Department Dep ON Dep.DepartmentID = empl.DepartmentID
-							LEFT JOIN Designation Des ON des.DesignationID = empl.DesignationID
-							LEFT JOIN Division Div on Div.DivisionID = empl.DivisionID
-							LEFT JOIN (SELECT
-											PersonID,ImagePath
-										FROM
-											Security..PersonImage
-											WHERE IsFavorite = 1
-										) PIM ON PIM.PersonID = Emp.PersonID
-                            left join {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..SystemVariable sv on empl.EmployeeTypeID = sv.SystemVariableID
-                            {where} {filter}
-                            ";
+                                emp.employee_id AS ""EmployeeID"",
+                                emp.employee_code AS ""EmployeeCode"",
+                                emp.full_name AS ""FullName"",
+                                empl.employee_type_id AS ""EmployeeTypeID"",
+                                COALESCE(sv.system_variable_code, '') AS ""EmployeeStatus"",
+                                pim.image_path AS ""ImagePath"",
+                                emp.work_email AS ""WorkEmail"",
+                                emp.date_of_joining AS ""DateOfJoining"",
+                                emp.employee_status_id AS ""EmployeeStatusID"",
+                                COALESCE(emp.employee_code, '') || '-' || COALESCE(emp.full_name, '') AS ""EmployeeNameWithCode"",
+                                COALESCE(div.division_name, '') || '-' || COALESCE(dep.department_name, '') || '-' || COALESCE(des.designation_name, '') AS ""EmployeeDivDeptDesg"",
+                                div.division_name AS ""DivisionName"",
+                                dep.department_name AS ""DepartmentName"",
+                                des.designation_name AS ""DesignationName"",
+                                COALESCE(emp.work_email, '') || '-' || COALESCE(emp.work_mobile, '') AS ""WorkEmailPhone"",
+                                COALESCE(TO_CHAR(emp.date_of_joining, 'DD-MM-YYYY') || '-' || TO_CHAR(emp.confirm_date, 'DD-MM-YYYY'), '') AS ""DOJCOD"",
+                                COALESCE(emp.work_mobile, '') AS ""WorkMobile"",
+                                emp.confirm_date::DATE AS ""ConfirmDate"",
+                                emp.person_id AS ""PersonID""
+                            FROM employee emp
+                            LEFT JOIN employment empl ON empl.employee_id = emp.employee_id AND empl.is_current = TRUE
+                            LEFT JOIN department dep ON dep.department_id = empl.department_id
+                            LEFT JOIN designation des ON des.designation_id = empl.designation_id
+                            LEFT JOIN division div ON div.division_id = empl.division_id
+                            LEFT JOIN (
+                                -- Subquery using the foreign table from the security_remote schema
+                                SELECT person_id, image_path
+                                FROM security_remote.person_image
+                                WHERE is_favorite = TRUE
+                            ) pim ON pim.person_id = emp.person_id
+                            LEFT JOIN security_remote.system_variable sv ON empl.employee_type_id = sv.system_variable_id
+                            {where} {filter}";
 
             var result = await EmployeeRepo.LoadGridModelAsync(parameters, sql);
             return result;
@@ -218,30 +216,37 @@ namespace HRMS.Manager.Implementations
             }
             where = filter.IsNotNullOrEmpty() ? "WHERE " : "";
             string sql = $@"SELECT DISTINCT
-	                            Emp.EmployeeID,
-	                            EmployeeCode,
-	                            FullName,
-	                            Emp.EmployeeTypeID,
-	                            ISNULL(sv.SystemVariableCode,'') EmployeeStatus,
-	                            ImagePath,
-	                            WorkEmail,
-	                            DateOfJoining,
-								EmployeeStatusID,
-								ISNULL(Emp.EmployeeCode,'')+'-'+ISNULL(Emp.FullName,'') EmployeeNameWithCode,
-								ISNULL(Emp.DivisionName,'')+'-'+ISNULL(Emp.DepartmentName,'')+'-'+ISNULL(Emp.DesignationName,'') EmployeeDivDeptDesg,
-								Emp.DivisionName,
-								Emp.DepartmentName,
-								Emp.DesignationName,
-								ISNULL(Emp.WorkEmail,'')+'-'+ISNULL(Emp.WorkMobile,'') WorkEmailPhone,
-								ISNULL(convert(varchar(20),Emp.DateOfJoining, 105)+'-'+convert(varchar(20),Emp.ConfirmDate, 105),'') DOJCOD,
-								ISNULL(Emp.WorkMobile,'') WorkMobile,
-								--ISNULL(Emp.ConfirmDate,'') ConfirmDate,
-                                CAST(Emp.ConfirmDate AS DATE) ConfirmDate,
-                                emp.PersonID
-                            FROM ViewALLEmployee Emp
-                            left join {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..SystemVariable sv on Emp.EmployeeTypeID = sv.SystemVariableID
-                            {where} {filter}
-                            ";
+	                            emp.employee_id AS ""EmployeeID"",
+	                            emp.employee_code AS ""EmployeeCode"",
+	                            emp.full_name AS ""FullName"",
+	                            emp.employee_type_id AS ""EmployeeTypeID"",
+	                            COALESCE(sv.system_variable_code, '') AS ""EmployeeStatus"",
+	                            pim.image_path AS ""ImagePath"",
+	                            emp.work_email AS ""WorkEmail"",
+	                            emp.date_of_joining AS ""DateOfJoining"",
+								emp.employee_status_id AS ""EmployeeStatusID"",
+								COALESCE(emp.employee_code, '') || '-' || COALESCE(emp.full_name, '') AS ""EmployeeNameWithCode"",
+								COALESCE(div.division_name, '') || '-' || COALESCE(dep.department_name, '') || '-' || COALESCE(des.designation_name, '') AS ""EmployeeDivDeptDesg"",
+								div.division_name AS ""DivisionName"",
+								dep.department_name AS ""DepartmentName"",
+								des.designation_name AS ""DesignationName"",
+								COALESCE(emp.work_email, '') || '-' || COALESCE(emp.work_mobile, '') AS ""WorkEmailPhone"",
+								COALESCE(TO_CHAR(emp.date_of_joining, 'DD-MM-YYYY') || '-' || TO_CHAR(emp.confirm_date, 'DD-MM-YYYY'), '') AS ""DOJCOD"",
+								COALESCE(emp.work_mobile, '') AS ""WorkMobile"",
+								emp.confirm_date::DATE AS ""ConfirmDate"",
+                                emp.person_id AS ""PersonID""
+                            FROM employee emp
+                            LEFT JOIN employment empl ON empl.employee_id = emp.employee_id AND empl.is_current = TRUE
+                            LEFT JOIN department dep ON dep.department_id = empl.department_id
+                            LEFT JOIN designation des ON des.designation_id = empl.designation_id
+                            LEFT JOIN division div ON div.division_id = empl.division_id
+                            LEFT JOIN (
+                                SELECT person_id, image_path
+                                FROM security_remote.person_image
+                                WHERE is_favorite = TRUE
+                            ) pim ON pim.person_id = emp.person_id
+                            LEFT JOIN security_remote.system_variable sv ON empl.employee_type_id = sv.system_variable_id
+                            {where} {filter}";
 
             var result = EmployeeRepo.LoadGridModel(parameters, sql);
             return result;
@@ -277,57 +282,56 @@ namespace HRMS.Manager.Implementations
                     }
                     where = filter.IsNotNullOrEmpty() ? "WHERE " : "";
                     string sql = $@"SELECT DISTINCT
-	                                        Emp.EmployeeID,
-	                                        Emp.EmployeeCode,
-	                                        Emp.FullName,
-	                                        empl.EmployeeTypeID,
-	                                        ImagePath,
-	                                        ISNULL(Emp.WorkEmail, '') WorkEmail,	                
-			                                    Emp.EmployeeStatusID,
-			                                    ISNULL(Emp.EmployeeCode,'')+'-'+ISNULL(Emp.FullName,'') EmployeeNameWithCode,
-			                                    ISNULL(DivisionName,'')+'-'+ISNULL(DepartmentName,'')+'-'+ISNULL(DesignationName,'') EmployeeDivDeptDesg,
-			                                    DivisionName,
-			                                    DepartmentName,
-			                                    DesignationName,
-			                                    ISNULL(Emp.WorkEmail,'')+'-'+ISNULL(Emp.WorkMobile,'') WorkEmailPhone,
-			                                    ISNULL(Emp.WorkMobile,'') WorkMobile,
-                                            ISNULL(SupervisorFullName,'')+'-'+ISNULL(SupervisorEmail,'') SupervisorInfo,
-                                            SupervisorFullName,
-                                            SupervisorEmail,
-			                                    SupImagePath
-                                            FROM Employee AS emp
-	                                        LEFT JOIN Employment empl ON empl.EmployeeID = emp.EmployeeID AND IsCurrent = 1
-	                                        LEFT JOIN (SELECT DepartmentID,DepartmentName FROM HRMS..Department) Dep ON Dep.DepartmentID = empl.DepartmentID
-	                                        LEFT JOIN (SELECT DesignationID,DesignationName FROM HRMS..Designation) Des ON des.DesignationID = empl.DesignationID
-	                                        LEFT JOIN (SELECT DivisionID,DivisionName FROM HRMS..Division  ) Div on Div.DivisionID = empl.DivisionID
+	                                        emp.employee_id AS ""EmployeeID"",
+	                                        emp.employee_code AS ""EmployeeCode"",
+	                                        emp.full_name AS ""FullName"",
+	                                        empl.employee_type_id AS ""EmployeeTypeID"",
+	                                        pim.image_path AS ""ImagePath"",
+	                                        COALESCE(emp.work_email, '') AS ""WorkEmail"",	                
+											emp.employee_status_id AS ""EmployeeStatusID"",
+											COALESCE(emp.employee_code, '') || '-' || COALESCE(emp.full_name, '') AS ""EmployeeNameWithCode"",
+											COALESCE(div.division_name, '') || '-' || COALESCE(dep.department_name, '') || '-' || COALESCE(des.designation_name, '') AS ""EmployeeDivDeptDesg"",
+											div.division_name AS ""DivisionName"",
+											dep.department_name AS ""DepartmentName"",
+											des.designation_name AS ""DesignationName"",
+											COALESCE(emp.work_email, '') || '-' || COALESCE(emp.work_mobile, '') AS ""WorkEmailPhone"",
+											COALESCE(emp.work_mobile, '') AS ""WorkMobile"",
+                                            COALESCE(super_emp.supervisor_full_name, '') || '-' || COALESCE(super_emp.supervisor_email, '') AS ""SupervisorInfo"",
+                                            super_emp.supervisor_full_name AS ""SupervisorFullName"",
+                                            super_emp.supervisor_email AS ""SupervisorEmail"",
+											super_emp.sup_image_path AS ""SupImagePath""
+                                            FROM employee emp
+	                                        LEFT JOIN employment empl ON empl.employee_id = emp.employee_id AND empl.is_current = TRUE
+	                                        LEFT JOIN (SELECT department_id, department_name FROM department) dep ON dep.department_id = empl.department_id
+	                                        LEFT JOIN (SELECT designation_id, designation_name FROM designation) des ON des.designation_id = empl.designation_id
+	                                        LEFT JOIN (SELECT division_id, division_name FROM division) div ON div.division_id = empl.division_id
 	                                        LEFT JOIN (SELECT
-						                                    PersonID,ImagePath
+						                                    person_id, image_path
 						                                FROM
-						                                    {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..PersonImage
-						                                    WHERE IsFavorite = 1
-						                                ) PIM ON PIM.PersonID = Emp.PersonID
-                                            left join {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..SystemVariable sv on empl.EmployeeTypeID = sv.SystemVariableID                       
+						                                    security_remote.person_image
+						                                    WHERE is_favorite = TRUE
+						                                ) pim ON pim.person_id = emp.person_id
+                                            LEFT JOIN security_remote.system_variable sv ON empl.employee_type_id = sv.system_variable_id                       
 	                                        LEFT JOIN (
-				                                    SELECT sup.EmployeeID,SupervisorType,supempl.IsCurrent,EmployeeSupervisorID,FullName SupervisorFullName,
-				                                    WorkEmail SupervisorEmail,ImagePath SupImagePath
+				                                    SELECT sup.employee_id, supervisor_type, supempl.is_current, employee_supervisor_id, sup_emp.full_name AS supervisor_full_name,
+				                                    sup_emp.work_email AS supervisor_email, sup_pim.image_path AS sup_image_path
 
 				                                    FROM 
-				                                    EmployeeSupervisorMap sup 
-				                                    LEFT JOIN Employee SupEmp on Sup.EmployeeSupervisorID = SupEmp.EmployeeID
-				                                    LEFT JOIN Employment supempl ON supempl.EmployeeID = sup.EmployeeID AND supempl.IsCurrent = 1
-				                                    LEFT JOIN (SELECT DepartmentID,DepartmentName FROM HRMS..Department) Dep ON Dep.DepartmentID = supempl.DepartmentID
-				                                    LEFT JOIN (SELECT DesignationID,DesignationName FROM HRMS..Designation) Des ON des.DesignationID = supempl.DesignationID
-				                                    LEFT JOIN (SELECT DivisionID,DivisionName FROM HRMS..Division  ) Div on Div.DivisionID = supempl.DivisionID
+				                                    employee_supervisor_map sup 
+				                                    LEFT JOIN employee sup_emp ON sup.employee_supervisor_id = sup_emp.employee_id
+				                                    LEFT JOIN employment supempl ON supempl.employee_id = sup.employee_id AND supempl.is_current = TRUE
+				                                    LEFT JOIN (SELECT department_id, department_name FROM department) dep ON dep.department_id = supempl.department_id
+				                                    LEFT JOIN (SELECT designation_id, designation_name FROM designation) des ON des.designation_id = supempl.designation_id
+				                                    LEFT JOIN (SELECT division_id, division_name FROM division) div ON div.division_id = supempl.division_id
 				                                    LEFT JOIN (SELECT
-                                                        PersonID,ImagePath
+                                                        person_id, image_path
                                                     FROM
-                                                        {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..PersonImage
-                                                        WHERE IsFavorite = 1
-                                                    ) SupPIM ON SupPIM.PersonID = SupEmp.PersonID
-				                                    WHERE  sup.IsCurrent =1 AND SupervisorType = 50
-			                                )SuperEmp ON SuperEmp.EmployeeID = Emp.EmployeeID 
-                                            {where} {filter}
-                                            ";
+                                                        security_remote.person_image
+                                                        WHERE is_favorite = TRUE
+                                                    ) sup_pim ON sup_pim.person_id = sup_emp.person_id
+				                                    WHERE sup.is_current = TRUE AND supervisor_type = 50
+			                                ) super_emp ON super_emp.employee_id = emp.employee_id 
+                                            {where} {filter}";
 
                     return await EmployeeRepo.LoadGridModelAsync(parameters, sql);
                 },
@@ -359,57 +363,56 @@ namespace HRMS.Manager.Implementations
             }
             where = filter.IsNotNullOrEmpty() ? "WHERE " : "";
             string sql = $@"SELECT DISTINCT
-	                            Emp.EmployeeID,
-	                            Emp.EmployeeCode,
-	                            Emp.FullName,
-	                            empl.EmployeeTypeID,
-	                            ImagePath,
-	                            ISNULL(Emp.WorkEmail, '') WorkEmail,	                
-			                    Emp.EmployeeStatusID,
-			                    ISNULL(Emp.EmployeeCode,'')+'-'+ISNULL(Emp.FullName,'') EmployeeNameWithCode,
-			                    ISNULL(DivisionName,'')+'-'+ISNULL(DepartmentName,'')+'-'+ISNULL(DesignationName,'') EmployeeDivDeptDesg,
-			                    DivisionName,
-			                    DepartmentName,
-			                    DesignationName,
-			                    ISNULL(Emp.WorkEmail,'')+'-'+ISNULL(Emp.WorkMobile,'') WorkEmailPhone,
-			                    ISNULL(Emp.WorkMobile,'') WorkMobile,
-                                ISNULL(SupervisorFullName,'')+'-'+ISNULL(SupervisorEmail,'') SupervisorInfo,
-                                SupervisorFullName,
-                                SupervisorEmail,
-			                    SupImagePath
-                            FROM Employee AS emp
-		                    LEFT JOIN Employment empl ON empl.EmployeeID = emp.EmployeeID AND IsCurrent = 1
-		                    LEFT JOIN (SELECT DepartmentID,DepartmentName FROM HRMS..Department) Dep ON Dep.DepartmentID = empl.DepartmentID
-		                    LEFT JOIN (SELECT DesignationID,DesignationName FROM HRMS..Designation) Des ON des.DesignationID = empl.DesignationID
-		                    LEFT JOIN (SELECT DivisionID,DivisionName FROM HRMS..Division  ) Div on Div.DivisionID = empl.DivisionID
+	                            emp.employee_id AS ""EmployeeID"",
+	                            emp.employee_code AS ""EmployeeCode"",
+	                            emp.full_name AS ""FullName"",
+	                            empl.employee_type_id AS ""EmployeeTypeID"",
+	                            pim.image_path AS ""ImagePath"",
+	                            COALESCE(emp.work_email, '') AS ""WorkEmail"",	                
+			                    emp.employee_status_id AS ""EmployeeStatusID"",
+			                    COALESCE(emp.employee_code, '') || '-' || COALESCE(emp.full_name, '') AS ""EmployeeNameWithCode"",
+			                    COALESCE(div.division_name, '') || '-' || COALESCE(dep.department_name, '') || '-' || COALESCE(des.designation_name, '') AS ""EmployeeDivDeptDesg"",
+			                    div.division_name AS ""DivisionName"",
+			                    dep.department_name AS ""DepartmentName"",
+			                    des.designation_name AS ""DesignationName"",
+			                    COALESCE(emp.work_email, '') || '-' || COALESCE(emp.work_mobile, '') AS ""WorkEmailPhone"",
+			                    COALESCE(emp.work_mobile, '') AS ""WorkMobile"",
+                                COALESCE(super_emp.supervisor_full_name, '') || '-' || COALESCE(super_emp.supervisor_email, '') AS ""SupervisorInfo"",
+                                super_emp.supervisor_full_name AS ""SupervisorFullName"",
+                                super_emp.supervisor_email AS ""SupervisorEmail"",
+			                    super_emp.sup_image_path AS ""SupImagePath""
+                            FROM employee emp
+		                    LEFT JOIN employment empl ON empl.employee_id = emp.employee_id AND empl.is_current = TRUE
+		                    LEFT JOIN (SELECT department_id, department_name FROM department) dep ON dep.department_id = empl.department_id
+		                    LEFT JOIN (SELECT designation_id, designation_name FROM designation) des ON des.designation_id = empl.designation_id
+		                    LEFT JOIN (SELECT division_id, division_name FROM division) div ON div.division_id = empl.division_id
 		                    LEFT JOIN (SELECT
-						                    PersonID,ImagePath
+						                    person_id, image_path
 					                    FROM
-						                    {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..PersonImage
-						                    WHERE IsFavorite = 1
-					                    ) PIM ON PIM.PersonID = Emp.PersonID
-                            left join {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..SystemVariable sv on empl.EmployeeTypeID = sv.SystemVariableID                       
+						                    security_remote.person_image
+						                    WHERE is_favorite = TRUE
+					                    ) pim ON pim.person_id = emp.person_id
+                            LEFT JOIN security_remote.system_variable sv ON empl.employee_type_id = sv.system_variable_id                       
 		                    LEFT JOIN (
-				                    SELECT sup.EmployeeID,SupervisorType,supempl.IsCurrent,EmployeeSupervisorID,FullName SupervisorFullName,
-				                    WorkEmail SupervisorEmail,ImagePath SupImagePath
+				                    SELECT sup.employee_id, supervisor_type, supempl.is_current, employee_supervisor_id, sup_emp.full_name AS supervisor_full_name,
+				                    sup_emp.work_email AS supervisor_email, sup_pim.image_path AS sup_image_path
 
 				                    FROM 
-				                    EmployeeSupervisorMap sup 
-				                    LEFT JOIN Employee SupEmp on Sup.EmployeeSupervisorID = SupEmp.EmployeeID
-				                    LEFT JOIN Employment supempl ON supempl.EmployeeID = sup.EmployeeID AND supempl.IsCurrent = 1
-				                    LEFT JOIN (SELECT DepartmentID,DepartmentName FROM HRMS..Department) Dep ON Dep.DepartmentID = supempl.DepartmentID
-				                    LEFT JOIN (SELECT DesignationID,DesignationName FROM HRMS..Designation) Des ON des.DesignationID = supempl.DesignationID
-				                    LEFT JOIN (SELECT DivisionID,DivisionName FROM HRMS..Division  ) Div on Div.DivisionID = supempl.DivisionID
+				                    employee_supervisor_map sup 
+				                    LEFT JOIN employee sup_emp ON sup.employee_supervisor_id = sup_emp.employee_id
+				                    LEFT JOIN employment supempl ON supempl.employee_id = sup.employee_id AND supempl.is_current = TRUE
+				                    LEFT JOIN (SELECT department_id, department_name FROM department) dep ON dep.department_id = supempl.department_id
+				                    LEFT JOIN (SELECT designation_id, designation_name FROM designation) des ON des.designation_id = supempl.designation_id
+				                    LEFT JOIN (SELECT division_id, division_name FROM division) div ON div.division_id = supempl.division_id
 				                    LEFT JOIN (SELECT
-                                        PersonID,ImagePath
+                                        person_id, image_path
                                     FROM
-                                        {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..PersonImage
-                                        WHERE IsFavorite = 1
-                                    ) SupPIM ON SupPIM.PersonID = SupEmp.PersonID
-				                    WHERE  sup.IsCurrent =1 AND SupervisorType = 50
-		                    )SuperEmp ON SuperEmp.EmployeeID = Emp.EmployeeID 
-                            {where} {filter}
-                            ";
+                                        security_remote.person_image
+                                        WHERE is_favorite = TRUE
+                                    ) sup_pim ON sup_pim.person_id = sup_emp.person_id
+				                    WHERE sup.is_current = TRUE AND supervisor_type = 50
+		                    ) super_emp ON super_emp.employee_id = emp.employee_id 
+                            {where} {filter}";
 
             return EmployeeRepo.LoadGridModel(parameters, sql);
         }
@@ -420,12 +423,12 @@ namespace HRMS.Manager.Implementations
         public async Task<Dictionary<string, object>> GetEmployeeTableDic(int primaryID)
         {
             string sql = $@"SELECT 
-	                            P.*, VA.UserID, sv.SystemVariableCode EmploymentCategoryName,ImagePath
+	                            p.*, va.user_id AS ""UserID"", sv.system_variable_code AS ""EmploymentCategoryName"", pim.image_path AS ""ImagePath""
                             FROM 
-                                Employee P
-                                LEFT JOIN ViewALLEmployee VA ON VA.EmployeeID = P.EmployeeID
-                                LEFT JOIN {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..SystemVariable sv on p.EmploymentCategoryID = sv.SystemVariableID
-	                        WHERE P.EmployeeID = {primaryID}";
+                                employee p
+                                LEFT JOIN view_all_employee va ON va.employee_id = p.employee_id
+                                LEFT JOIN security_remote.system_variable sv ON p.employment_category_id = sv.system_variable_id
+	                        WHERE p.employee_id = {primaryID}";
             var data = EmployeeRepo.GetData(sql);
 
             return await Task.FromResult(data);
@@ -433,39 +436,39 @@ namespace HRMS.Manager.Implementations
         public async Task<Dictionary<string, object>> GetEmployeeByID(int primaryID)
         {
             string sql = $@"SELECT 
-	                            P.*, sv.SystemVariableCode EmploymentCategoryName,ImagePath,VA.DesignationName,VA.DepartmentName,VA.DivisionName, VA.WorkEmail, VA.WorkMobile
+	                            p.*, sv.system_variable_code AS ""EmploymentCategoryName"", pim.image_path AS ""ImagePath"", va.designation_name AS ""DesignationName"", va.department_name AS ""DepartmentName"", va.division_name AS ""DivisionName"", va.work_email AS ""WorkEmail"", va.work_mobile AS ""WorkMobile""
                             FROM 
-                                Employee P
-                                LEFT JOIN ViewALLEmployee VA ON VA.EmployeeID = P.EmployeeID
-                                LEFT JOIN {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..SystemVariable sv on p.EmploymentCategoryID = sv.SystemVariableID
-	                        WHERE P.EmployeeID = {primaryID}";
+                                employee p
+                                LEFT JOIN view_all_employee va ON va.employee_id = p.employee_id
+                                LEFT JOIN security_remote.system_variable sv ON p.employment_category_id = sv.system_variable_id
+	                        WHERE p.employee_id = {primaryID}";
             var data = EmployeeRepo.GetData(sql);
 
             return await Task.FromResult(data);
         }
         public async Task<Dictionary<string, object>> GetEmploymentTableDic(int primaryID)
         {
-            string sql = $@"select p.*, dept.DepartmentName, desg.DesignationName, intdesg.DesignationName AS InternalDesignationName, dv.DivisionName
-                                ,cl.ClusterName, rg.RegionName, bi.BranchName, sv.SystemVariableCode EmployeeStatus, sm.ShiftingName
-                                ,JG.JobGradeName
-                                ,bnk.BankAccountName 
-								,bnk.BankAccountNumber 
-								,bnk.BankName
-								,bnk.BankBranchName 
-								,bnk.RoutingNumber
-                                From Employment P
-                                left join {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..SystemVariable sv on p.EmployeeTypeID = sv.SystemVariableID
-                                left join Department dept on P.DepartmentID = dept.DepartmentID
-                                left join Designation desg on P.DesignationID = desg.DesignationID
-                                left join Designation intdesg on P.InternalDesignationID = intdesg.DesignationID
-                                left join Division dv on P.DivisionID=dv.DivisionID
-                                left join Cluster cl on P.ClusterID = cl.ClusterID
-                                left join Region rg on P.RegionID = rg.RegionID
-                                left join BranchInfo bi on P.BranchID = bi.BranchID
-                                left join ShiftingMaster sm on P.ShiftID = sm.ShiftingMasterID
-								left join JobGrade JG ON P.JobGradeID = JG.JobGradeID
-                                left join EmployeeBankInfo bnk on bnk.EmployeeID=p.EmployeeID
-	                            WHERE P.IsCurrent=1 AND P.EmployeeID = {primaryID}";
+            string sql = $@"SELECT p.*, dept.department_name AS ""DepartmentName"", desg.designation_name AS ""DesignationName"", intdesg.designation_name AS ""InternalDesignationName"", dv.division_name AS ""DivisionName""
+                                , cl.cluster_name AS ""ClusterName"", rg.region_name AS ""RegionName"", bi.branch_name AS ""BranchName"", sv.system_variable_code AS ""EmployeeStatus"", sm.shifting_name AS ""ShiftingName""
+                                , jg.job_grade_name AS ""JobGradeName""
+                                , bnk.bank_account_name AS ""BankAccountName"" 
+								, bnk.bank_account_number AS ""BankAccountNumber"" 
+								, bnk.bank_name AS ""BankName""
+								, bnk.bank_branch_name AS ""BankBranchName"" 
+								, bnk.routing_number AS ""RoutingNumber""
+                                FROM employment p
+                                LEFT JOIN security_remote.system_variable sv ON p.employee_type_id = sv.system_variable_id
+                                LEFT JOIN department dept ON p.department_id = dept.department_id
+                                LEFT JOIN designation desg ON p.designation_id = desg.designation_id
+                                LEFT JOIN designation intdesg ON p.internal_designation_id = intdesg.designation_id
+                                LEFT JOIN division dv ON p.division_id = dv.division_id
+                                LEFT JOIN cluster cl ON p.cluster_id = cl.cluster_id
+                                LEFT JOIN region rg ON p.region_id = rg.region_id
+                                LEFT JOIN branch_info bi ON p.branch_id = bi.branch_id
+                                LEFT JOIN shifting_master sm ON p.shift_id = sm.shifting_master_id
+								LEFT JOIN job_grade jg ON p.job_grade_id = jg.job_grade_id
+                                LEFT JOIN employee_bank_info bnk ON bnk.employee_id = p.employee_id
+	                            WHERE p.is_current = TRUE AND p.employee_id = {primaryID}";
             var data = EmployeeRepo.GetData(sql);
 
             if (data.Count > 0)
@@ -481,12 +484,12 @@ namespace HRMS.Manager.Implementations
         public async Task<List<Dictionary<string, object>>> GetEmployeeSupervisorMap(int primaryID)
         {
             string sql = $@"SELECT 
-	                            P.*, emp.FullName SupervisorFullName,emp.WorkEmail SupervisorEmail,emp.WorkMobile SupMobile,VA.ImagePath SupervisorPhotoUrl
+	                            p.*, emp.full_name AS ""SupervisorFullName"", emp.work_email AS ""SupervisorEmail"", emp.work_mobile AS ""SupMobile"", va.image_path AS ""SupervisorPhotoUrl""
                             FROM 
-                            EmployeeSupervisorMap P
-                            left join Employee emp on P.EmployeeSupervisorID = emp.EmployeeID
-                            LEFT JOIN ViewALLEmployee VA ON VA.EmployeeID = P.EmployeeSupervisorID
-	                            WHERE P.IsCurrent=1 AND P.EmployeeID = {primaryID} AND P.SupervisorType={(int)SupervisorType.Regular}";
+                            employee_supervisor_map p
+                            LEFT JOIN employee emp ON p.employee_supervisor_id = emp.employee_id
+                            LEFT JOIN view_all_employee va ON va.employee_id = p.employee_supervisor_id
+	                            WHERE p.is_current = TRUE AND p.employee_id = {primaryID} AND p.supervisor_type = {(int)SupervisorType.Regular}";
             var data = EmployeeSupervisorMapRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(data.ToList());
@@ -495,12 +498,12 @@ namespace HRMS.Manager.Implementations
         public async Task<List<Dictionary<string, object>>> GetDottedEmployeeSupervisorMap(int primaryID)
         {
             string sql = $@"SELECT 
-	                            P.*, emp.FullName SupervisorFullName,emp.WorkEmail,emp.WorkMobile, VA.ImagePath SupervisorPhotoUrl
+	                            p.*, emp.full_name AS ""SupervisorFullName"", emp.work_email AS ""WorkEmail"", emp.work_mobile AS ""WorkMobile"", va.image_path AS ""SupervisorPhotoUrl""
                             FROM 
-                            EmployeeSupervisorMap P
-                            left join Employee emp on P.EmployeeSupervisorID = emp.EmployeeID
-                            LEFT JOIN ViewALLEmployee VA ON VA.EmployeeID = P.EmployeeSupervisorID
-	                            WHERE P.IsCurrent=1 AND P.EmployeeID = {primaryID} AND P.SupervisorType={(int)SupervisorType.Dotted}";
+                            employee_supervisor_map p
+                            LEFT JOIN employee emp ON p.employee_supervisor_id = emp.employee_id
+                            LEFT JOIN view_all_employee va ON va.employee_id = p.employee_supervisor_id
+	                            WHERE p.is_current = TRUE AND p.employee_id = {primaryID} AND p.supervisor_type = {(int)SupervisorType.Dotted}";
             var data = EmployeeSupervisorMapRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(data.ToList());
@@ -509,12 +512,12 @@ namespace HRMS.Manager.Implementations
         public async Task<Dictionary<string, object>> GetDelegatedEmployeeSupervisor(int primaryID)
         {
             string sql = $@"SELECT 
-	                            P.*, emp.FullName SupervisorFullName,emp.WorkEmail,emp.WorkMobile, VA.ImagePath SupervisorPhotoUrl
+	                            p.*, emp.full_name AS ""SupervisorFullName"", emp.work_email AS ""WorkEmail"", emp.work_mobile AS ""WorkMobile"", va.image_path AS ""SupervisorPhotoUrl""
                             FROM 
-                            EmployeeSupervisorMap P
-                            left join Employee emp on P.EmployeeSupervisorID = emp.EmployeeID
-                            LEFT JOIN ViewALLEmployee VA ON VA.EmployeeID = P.EmployeeSupervisorID
-	                            WHERE P.IsCurrent=1 AND P.EmployeeID = {primaryID} AND P.SupervisorType={(int)SupervisorType.Delegated}";
+                            employee_supervisor_map p
+                            LEFT JOIN employee emp ON p.employee_supervisor_id = emp.employee_id
+                            LEFT JOIN view_all_employee va ON va.employee_id = p.employee_supervisor_id
+	                            WHERE p.is_current = TRUE AND p.employee_id = {primaryID} AND p.supervisor_type = {(int)SupervisorType.Delegated}";
             var data = EmployeeSupervisorMapRepo.GetData(sql);
 
             return await Task.FromResult(data);
@@ -523,7 +526,7 @@ namespace HRMS.Manager.Implementations
         public async Task<Employee> SavePersonAsEmployee(int PersonId)
         {
             Employee master = new Employee();
-            string sql = $@"SELECT Per.PersonID, Per.FirstName FullName, Per.Email WorkEmail, Per.Mobile WorkMobile FROM {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..Person Per WHERE Per.PersonID={PersonId}";
+            string sql = $@"SELECT per.person_id AS ""PersonID"", per.first_name AS ""FullName"", per.email AS ""WorkEmail"", per.mobile AS ""WorkMobile"" FROM security_remote.person per WHERE per.person_id = {PersonId}";
             master = EmployeeRepo.GetDataModelCollection<Employee>(sql).FirstOrDefault();
 
 
@@ -894,39 +897,38 @@ namespace HRMS.Manager.Implementations
 
         public async Task<string> GetMediaList(int personID)
         {
-            string sql = $@"SELECT Parent.id,
-	                            Parent.name,
-	                            Parent.info,
+            string sql = $@"SELECT parent.id,
+	                            parent.name,
+	                            parent.info,
 	                            media.type,
 	                            media.title,
 	                            media.preview
                             FROM 
                             (SELECT 
-	                            Row_Number()OVER(order by name) id,
+	                            ROW_NUMBER() OVER (ORDER BY name) AS id,
 	                            name,
-	                            Cast(sum(info) as varchar) + ' Photos'info
+	                            CAST(SUM(info) AS varchar) || ' Photos' AS info
                             FROM
                             (SELECT
-	                            distinct
-	                            FORMAT(CreatedDate, 'MMMM yyyy') name,
-	                            COUNT(PIID) info
+	                            DISTINCT
+	                            TO_CHAR(created_date, 'FMMonth YYYY') AS name,
+	                            COUNT(pi_id) AS info
                             FROM 
-	                            EmployeeImage
-                            WHERE EmployeeID = {personID}
-                            GROUP BY CreatedDate
-                            )Media
+	                            employee_image
+                            WHERE employee_id = {personID}
+                            GROUP BY created_date
+                            ) media
                             GROUP BY name
-							)Parent
+							) parent
 							LEFT JOIN (
 							SELECT
-								FORMAT(CreatedDate, 'MMMM yyyy') name,
-								'photo' type,	
-								ImageName title,
-								ImagePath preview
+								TO_CHAR(created_date, 'FMMonth YYYY') AS name,
+								'photo' AS type,	
+								image_name AS title,
+								image_path AS preview
 							FROM 
-								EmployeeImage
-							WHERE EmployeeID = {personID} ) media ON media.name = Parent.name
-							FOR JSON AUTO";
+								employee_image
+							WHERE employee_id = {personID} ) media ON media.name = parent.name";
             var mediaList = EmployeeRepo.GetJsonData(sql);
             return await Task.FromResult(mediaList);
         }
@@ -934,7 +936,7 @@ namespace HRMS.Manager.Implementations
         public async Task<List<Dictionary<string, object>>> GetAllEmployeeListByWhereCondition(string whereCondition)
         {
             string where = whereCondition.IsNotNullOrEmpty() ? @$"WHERE {whereCondition}" : "";
-            string sql = $@"SELECT * FROM ViewALLEmployeeForExcel {where}";
+            string sql = $@"SELECT * FROM view_all_employee_for_excel {where}";
             var data = EmployeeSupervisorMapRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(data.ToList());

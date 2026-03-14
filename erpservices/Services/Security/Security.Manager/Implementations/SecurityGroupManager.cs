@@ -101,22 +101,14 @@ namespace Security.Manager
 
         public async Task<IEnumerable<Dictionary<string, object>>> GetSecurityRulesByGroupID(int groupID)
         {
-            string sql = $@"SELECT 
-	                            SecurityGroupRuleChildID
-	                            --,SGRC.CompanyID
-	                            --,SGRC.CreatedBy
-	                            --,SGRC.CreatedDate
-	                            --,SGRC.CreatedIP
-	                            --,SGRC.UpdatedBy
-	                            --,SGRC.UpdatedDate
-	                            --,SGRC.UpdatedIP
-	                            --,SGRC.ROWVERSION
-	                            ,SGRC.SecurityGroupID
-	                            ,SGRC.SecurityRuleID
-	                            ,SRM.SecurityRuleName
-                            FROM SecurityGroupRuleChild SGRC
-                            INNER JOIN SecurityRuleMaster SRM ON SRM.SecurityRuleID = SGRC.SecurityRuleID
-                            WHERE SecurityGroupID = {groupID}";
+            string sql = $@"SELECT
+                                sgrc.security_group_rule_child_id AS ""SecurityGroupRuleChildID"",
+                                sgrc.security_group_id AS ""SecurityGroupID"",
+                                srm.security_rule_id AS ""SecurityRuleID"",
+                                srm.security_rule_name AS ""SecurityRuleName""
+                            FROM security_group_rule_child sgrc
+                            INNER JOIN security_rule_master srm ON srm.security_rule_id = sgrc.security_rule_id
+                            WHERE sgrc.security_group_id = {groupID}";
             var listDict = SecurityGroupRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(listDict);

@@ -2,6 +2,7 @@
 using Core.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -135,6 +136,18 @@ namespace Core
         public static string FaildToMapData = "Failed to map data!";
         public static string OTPKey = "NZAGOQDEJ5KFAR3FJZSVEYKUEFHW4==="; //n@g@dOTPGeNeRaT!On
         public static string SaveSuccessfullyMessage = "Information Submitted Successfully!";
+
+        public static string GetLinkDb(string remoteDb)
+        {
+            switch (remoteDb)
+            {
+                case "Security":
+                    return "security_remote";
+                default:
+                    return "";
+            }
+        }
+
         public enum LoginPolicyReason
         {
             Success = 0,

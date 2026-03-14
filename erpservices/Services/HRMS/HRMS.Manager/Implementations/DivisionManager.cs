@@ -31,18 +31,25 @@ namespace HRMS.Manager.Implementations
 
         public async Task<IEnumerable<Dictionary<string, object>>> GetDivisionListDic()
         {
-            string sql = $@"SELECT Div.*
-	                        ,CASE 
-		                        WHEN Emp.DivisionID IS NULL
-			                        THEN CAST(1 AS BIT)
-		                        ELSE CAST(0 AS BIT)
-		                        END IsRemovable
-                        FROM Division Div
-                        LEFT JOIN (
-	                        SELECT DISTINCT DivisionID
-	                        FROM Employment
-	                        ) Emp ON Div.DivisionID = Emp.DivisionID
-                        ORDER BY Div.DivisionID DESC";
+            string sql = $@"SELECT
+                                div.division_id AS ""DivisionID"",
+                                div.division_code AS ""DivisionCode"",
+                                div.division_name AS ""DivisionName"",
+                                CASE 
+                                    WHEN emp.division_id IS NULL
+                                        THEN TRUE
+                                    ELSE FALSE
+                                END AS ""IsRemovable""
+                            FROM
+                                division div
+                            LEFT JOIN (
+                                SELECT DISTINCT
+                                    division_id
+                                FROM
+                                    employment
+                            ) emp ON div.division_id = emp.division_id
+                            ORDER BY
+                                div.division_id DESC";
             var listDict = DivisionRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(listDict);
@@ -106,7 +113,13 @@ namespace HRMS.Manager.Implementations
         {
             string where = whereCondition.IsNotNullOrEmpty() ? @$"WHERE {whereCondition}" : "";
 
-            string sql = $@"select div.DivisionID,div.DivisionName,div.DivisionCode from Division Div {where}";
+            string sql = $@"SELECT
+                                div.division_id AS ""DivisionID"",
+                                div.division_name AS ""DivisionName"",
+                                div.division_code AS ""DivisionCode""
+                            FROM
+                                division div
+                            {where}";
 
             var data = DivisionRepo.GetDataDictCollection(sql);
 

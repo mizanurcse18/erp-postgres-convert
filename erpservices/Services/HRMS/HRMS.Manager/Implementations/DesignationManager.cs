@@ -34,17 +34,25 @@ namespace HRMS.Manager.Implementations
         {
             //var designation = await DesignationRepo.GetAllListAsync();
             //return designation.MapTo<List<DesignationDto>>();
-            string sql = $@"SELECT Desg.*
-	                        ,CASE 
-		                        WHEN Emp.DesignationID IS NULL
-			                        THEN CAST(1 AS BIT)
-		                        ELSE CAST(0 AS BIT)
-		                        END IsRemovable
-                        FROM Designation Desg
-                        LEFT JOIN (
-	                        SELECT DISTINCT DesignationID
-	                        FROM Employment
-	                        ) Emp ON Desg.DesignationID = Emp.DesignationID ORDER BY Desg.DesignationID DESC";
+            string sql = $@"SELECT
+                                desg.designation_id AS ""DesignationID"",
+                                desg.designation_code AS ""DesignationCode"",
+                                desg.designation_name AS ""DesignationName"",
+                                CASE 
+                                    WHEN emp.designation_id IS NULL
+                                        THEN TRUE
+                                    ELSE FALSE
+                                END AS ""IsRemovable""
+                            FROM
+                                designation desg
+                            LEFT JOIN (
+                                SELECT DISTINCT
+                                    designation_id
+                                FROM
+                                    employment
+                            ) emp ON desg.designation_id = emp.designation_id
+                            ORDER BY
+                                desg.designation_id DESC";
 
             return await Task.FromResult(DesignationRepo.GetDataModelCollection<DesignationDto>(sql));
         }

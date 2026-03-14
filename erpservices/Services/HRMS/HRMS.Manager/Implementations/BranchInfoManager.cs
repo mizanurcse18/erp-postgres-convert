@@ -28,18 +28,25 @@ namespace HRMS.Manager.Implementations
 
         public async Task<IEnumerable<Dictionary<string, object>>> GetBranchInfoListDic()
         {
-            string sql = $@"SELECT Clus.*
-	                        ,CASE 
-		                        WHEN Emp.BranchID IS NULL
-			                        THEN CAST(1 AS BIT)
-		                        ELSE CAST(0 AS BIT)
-		                        END IsRemovable
-                        FROM BranchInfo Clus
-                        LEFT JOIN (
-	                        SELECT DISTINCT BranchID
-	                        FROM Employment
-	                        ) Emp ON Clus.BranchID = Emp.BranchID
-                        ORDER BY Clus.BranchID DESC";
+            string sql = $@"SELECT
+                                clus.branch_id AS ""BranchID"",
+                                clus.branch_code AS ""BranchCode"",
+                                clus.branch_name AS ""BranchName"",
+                                CASE 
+                                    WHEN emp.branch_id IS NULL
+                                        THEN TRUE
+                                    ELSE FALSE
+                                END AS ""IsRemovable""
+                            FROM
+                                branch_info clus
+                            LEFT JOIN (
+                                SELECT DISTINCT
+                                    branch_id
+                                FROM
+                                    employment
+                            ) emp ON clus.branch_id = emp.branch_id
+                            ORDER BY
+                                clus.branch_id DESC";
             var listDict = BranchInfoRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(listDict);

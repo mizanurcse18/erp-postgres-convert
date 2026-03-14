@@ -28,18 +28,25 @@ namespace HRMS.Manager.Implementations
 
         public async Task<IEnumerable<Dictionary<string, object>>> GetClusterListDic()
         {
-            string sql = $@"SELECT Clus.*
-	                        ,CASE 
-		                        WHEN RG.ClusterID IS NULL
-			                        THEN CAST(1 AS BIT)
-		                        ELSE CAST(0 AS BIT)
-		                        END IsRemovable
-                        FROM Cluster Clus
-                        LEFT JOIN (
-	                        SELECT DISTINCT ClusterID
-	                        FROM Region
-	                        ) RG ON Clus.ClusterID = RG.ClusterID
-                        ORDER BY Clus.ClusterID DESC";
+            string sql = $@"SELECT
+                                clus.cluster_id AS ""ClusterID"",
+                                clus.cluster_code AS ""ClusterCode"",
+                                clus.cluster_name AS ""ClusterName"",
+                                CASE 
+                                    WHEN rg.cluster_id IS NULL
+                                        THEN TRUE
+                                    ELSE FALSE
+                                END AS ""IsRemovable""
+                            FROM
+                                cluster clus
+                            LEFT JOIN (
+                                SELECT DISTINCT
+                                    cluster_id
+                                FROM
+                                    region
+                            ) rg ON clus.cluster_id = rg.cluster_id
+                            ORDER BY
+                                clus.cluster_id DESC";
             var listDict = ClusterRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(listDict);

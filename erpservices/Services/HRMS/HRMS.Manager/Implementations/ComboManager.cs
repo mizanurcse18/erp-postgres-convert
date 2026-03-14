@@ -68,7 +68,7 @@ namespace HRMS.Manager.Implementations
 
         public async Task<List<ComboModel>> GetDepartmentsCascade(int DivisionID)
         {
-            var departmentList = await DepartmentRepo.GetAllListAsync(x => x.DivisionID == DivisionID.ToString());
+            var departmentList = await DepartmentRepo.GetAllListAsync(x => x.DivisionID == DivisionID);
             return departmentList.Select(x => new ComboModel { value = x.DepartmentID, label = x.DepartmentName }).ToList();
         }
         public async Task<List<ComboModel>> GetDepartmentsCascadeByDivisionIDs(string DivisionIDs)
@@ -186,11 +186,13 @@ namespace HRMS.Manager.Implementations
         public async Task<List<ComboModel>> GetActiveEmployeeList()
         {
             string sql = @$"SELECT 
-                                EmployeeID  value,
-                                CONCAT(EmployeeCode,'-', FullName) label  
+                                ""EmployeeID"" AS value,
+                                CONCAT(""EmployeeCode"", '-', ""FullName"") AS label
                             FROM 
-                                ViewALLEmployee 
-                            WHERE ISNULL(EmployeeTypeID,0) <> {(int)Util.EmployeeType.Discontinued} OR CAST(DiscontinueDate as Date) >= CAST(getdate() as date)";
+                                view_all_employee
+                            WHERE 
+                                COALESCE(""EmployeeTypeID"", 0) <> {(int)Util.EmployeeType.Discontinued}
+                                OR ""DiscontinueDate""::DATE >= CURRENT_DATE";
             return EmployeeRepo.GetDataModelCollection<ComboModel>(sql);
         }
 

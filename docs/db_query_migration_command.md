@@ -1,0 +1,1 @@
+I'll convert this SQL query to follow the same PostgreSQL-compatible pattern with snake_case column names and double-quoted aliases

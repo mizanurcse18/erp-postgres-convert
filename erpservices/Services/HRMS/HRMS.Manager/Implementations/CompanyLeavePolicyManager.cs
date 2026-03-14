@@ -44,24 +44,30 @@ namespace HRMS.Manager
             //                     LEFT JOIN Security..SystemVariable SVE ON CLP.EmployeeStatusID = SVE.SystemVariableID
             //                     WHERE SV.EntityTypeName IN('LeaveCategory', 'EmployeeJobStatus') AND CLP.FinancialYearID={finYearID} AND CLP.EmployeeStatusID={empStatusID}";
 
-            string sql = $@"SELECT ISNULL(CLP.CLPolicyID,ROW_NUMBER()OVER(ORDER BY SVE.SystemVariableID)) CLPolicyID
-	                            ,FY.FinancialYearID
-	                            ,SVE.SystemVariableID EmployeeStatusID
-	                            ,SV.SystemVariableID LeaveCategoryID
-	                            ,CLP.LeaveInDays
-	                            ,CLP.Remarks
-	                            ,ISNULL(CLP.CompanyID,'{AppContexts.User.CompanyID}') CompanyID
-	                            ,SV.SystemVariableCode AS LeaveCategoryName
-	                            ,FY.Year AS Year
-	                            ,SVE.SystemVariableCode AS EmployeeStatusName
-	                            ,1 AS IsExists
-                            FROM Security..SystemVariable SV
-                            LEFT JOIN CompanyLeavePolicy CLP ON CLP.LeaveCategoryID = SV.SystemVariableID
-	                            AND CLP.FinancialYearID = {finYearID}
-	                            AND CLP.EmployeeStatusID = {empStatusID}
-                            LEFT JOIN Security..FinancialYear FY ON  FY.FinancialYearID = {finYearID}
-                            LEFT JOIN Security..SystemVariable SVE ON SVE.SystemVariableID = {empStatusID}
-                            WHERE SV.EntityTypeName IN ('LeaveCategory')";
+            string sql = $@"SELECT
+                                COALESCE(clp.cl_policy_id, ROW_NUMBER() OVER (ORDER BY sve.system_variable_id)) AS ""CLPolicyID"",
+                                fy.financial_year_id AS ""FinancialYearID"",
+                                sve.system_variable_id AS ""EmployeeStatusID"",
+                                sv.system_variable_id AS ""LeaveCategoryID"",
+                                clp.leave_in_days AS ""LeaveInDays"",
+                                clp.remarks AS ""Remarks"",
+                                COALESCE(clp.company_id, '{AppContexts.User.CompanyID}') AS ""CompanyID"",
+                                sv.system_variable_code AS ""LeaveCategoryName"",
+                                fy.year AS ""Year"",
+                                sve.system_variable_code AS ""EmployeeStatusName"",
+                                1 AS ""IsExists""
+                            FROM
+                                system_variable sv
+                            LEFT JOIN
+                                company_leave_policy clp ON clp.leave_category_id = sv.system_variable_id
+                                AND clp.financial_year_id = {finYearID}
+                                AND clp.employee_status_id = {empStatusID}
+                            LEFT JOIN
+                                financial_year fy ON fy.financial_year_id = {finYearID}
+                            LEFT JOIN
+                                system_variable sve ON sve.system_variable_id = {empStatusID}
+                            WHERE
+                                sv.entity_type_name IN ('LeaveCategory')";
             var policyList = new List<CompanyLeavePolicyDto>();
             policyList = CompanyLeavePolicyRepo.GetDataModelCollection<CompanyLeavePolicyDto>(sql);
 
@@ -138,35 +144,45 @@ namespace HRMS.Manager
         public async Task<List<CompanyLeavePolicyDto>> GetCompanyLeavePolicyListWithDetails()
         {
             var policyList = new List<CompanyLeavePolicyDto>();
-            var sql = $@"   SELECT 
-	                            CLP.CLPolicyID, 
-	                            CLP.FinancialYearID, 
-	                            CLP.EmployeeStatusID,
-	                            CLP.LeaveCategoryID, 
-	                            CLP.LeaveInDays, 
-	                            CLP.Remarks,
-	                            CLP.CompanyID , 
-	                            SV.SystemVariableCode AS LeaveCategoryName,
-	                            FY.Year AS Year, 
-	                            SVE.SystemVariableCode AS EmployeeStatusName
-	                            ,CASE 
-		                            WHEN DA.FinancialYearID IS NULL
-			                            THEN CAST(1 AS BIT)
-		                            ELSE CAST(0 AS BIT)
-		                            END IsRemovable
-                            FROM CompanyLeavePolicy CLP
-                            LEFT JOIN Security..SystemVariable SV ON CLP.LeaveCategoryID = SV.SystemVariableID
-                            LEFT JOIN Security..FinancialYear FY ON FY.FinancialYearID = CLP.FinancialYearID
-                            LEFT JOIN Security..SystemVariable SVE ON CLP.EmployeeStatusID = SVE.SystemVariableID
-                            LEFT JOIN ( 		
-		                            SELECT DISTINCT
-			                            FinancialYearID,LeaveCategoryID,EmployeeStatusID 
-		                            FROM 
-			                            EmployeeLeaveAccount ELA	
-			                            INNER JOIN ViewALLEmployee VAE ON VAE.EmployeeID = ELA.EmployeeID
-		                            ) 
-		                            DA ON DA.FinancialYearID =CLP.FinancialYearID AND DA.LeaveCategoryID = CLP.LeaveCategoryID AND DA.EmployeeStatusID = CLP.EmployeeStatusID
-                            WHERE SV.EntityTypeName IN('LeaveCategory', 'EmployeeJobStatus') AND CLP.CompanyID = '{AppContexts.User.CompanyID}'";
+            var sql = $@"SELECT
+                                clp.cl_policy_id AS ""CLPolicyID"",
+                                clp.financial_year_id AS ""FinancialYearID"",
+                                clp.employee_status_id AS ""EmployeeStatusID"",
+                                clp.leave_category_id AS ""LeaveCategoryID"",
+                                clp.leave_in_days AS ""LeaveInDays"",
+                                clp.remarks AS ""Remarks"",
+                                clp.company_id AS ""CompanyID"",
+                                sv.system_variable_code AS ""LeaveCategoryName"",
+                                fy.year AS ""Year"",
+                                sve.system_variable_code AS ""EmployeeStatusName"",
+                                CASE 
+                                    WHEN da.financial_year_id IS NULL
+                                        THEN TRUE
+                                    ELSE FALSE
+                                END AS ""IsRemovable""
+                            FROM
+                                company_leave_policy clp
+                            LEFT JOIN
+                                system_variable sv ON clp.leave_category_id = sv.system_variable_id
+                            LEFT JOIN
+                                financial_year fy ON fy.financial_year_id = clp.financial_year_id
+                            LEFT JOIN
+                                system_variable sve ON clp.employee_status_id = sve.system_variable_id
+                            LEFT JOIN (
+                                SELECT DISTINCT
+                                    financial_year_id,
+                                    leave_category_id,
+                                    employee_status_id
+                                FROM
+                                    employee_leave_account ela
+                                INNER JOIN
+                                    view_all_employee vae ON vae.employee_id = ela.employee_id
+                            ) da ON da.financial_year_id = clp.financial_year_id 
+                                AND da.leave_category_id = clp.leave_category_id 
+                                AND da.employee_status_id = clp.employee_status_id
+                            WHERE
+                                sv.entity_type_name IN ('LeaveCategory', 'EmployeeJobStatus') 
+                                AND clp.company_id = '{AppContexts.User.CompanyID}'";
 
             //GROUP BY FY.Year,SVE.SystemVariableCode, CLP.FinancialYearID, CLP.EmployeeStatusID";
 
@@ -196,34 +212,46 @@ namespace HRMS.Manager
             string sql = "";
             if(clPolicy.IsExists)
             {                
-                sql = $@"SELECT 
-	                        ISNULL(CLP.CLPolicyID,ROW_NUMBER() OVER (
-	                        ORDER BY SV.SystemVariableID
-                            )) CLPolicyID
-	                        ,ISNULL(CLP.FinancialYearID,{clPolicy.FinancialYearID}) FinancialYearID
-	                        ,ISNULL(CLP.EmployeeStatusID,{clPolicy.EmployeeStatusID}) EmployeeStatusID
-	                        ,SV.SystemVariableID LeaveCategoryID
-	                        ,ISNULL(CLP.LeaveInDays,0) LeaveInDays
-	                        ,CLP.Remarks
-	                        ,CLP.CompanyID
-	                        ,SV.SystemVariableCode AS LeaveCategoryName
-	                        ,FY.Year AS Year
-	                        ,SVE.SystemVariableCode AS EmployeeStatusName
-	                        ,1 AS IsExists
+                sql = $@"SELECT
+                            COALESCE(clp.cl_policy_id, ROW_NUMBER() OVER (ORDER BY sv.system_variable_id)) AS ""CLPolicyID"",
+                            COALESCE(clp.financial_year_id, {clPolicy.FinancialYearID}) AS ""FinancialYearID"",
+                            COALESCE(clp.employee_status_id, {clPolicy.EmployeeStatusID}) AS ""EmployeeStatusID"",
+                            sv.system_variable_id AS ""LeaveCategoryID"",
+                            COALESCE(clp.leave_in_days, 0) AS ""LeaveInDays"",
+                            clp.remarks AS ""Remarks"",
+                            clp.company_id AS ""CompanyID"",
+                            sv.system_variable_code AS ""LeaveCategoryName"",
+                            fy.year AS ""Year"",
+                            sve.system_variable_code AS ""EmployeeStatusName"",
+                            1 AS ""IsExists""
                         FROM
-	                        Security..SystemVariable SV
-	                        LEFT JOIN CompanyLeavePolicy CLP ON CLP.LeaveCategoryID = SV.SystemVariableID 
-	                        AND CLP.FinancialYearID = {clPolicy.FinancialYearID} AND CLP.EmployeeStatusID = {clPolicy.EmployeeStatusID}
-	                        LEFT JOIN Security..FinancialYear FY ON FY.FinancialYearID = {clPolicy.FinancialYearID} --CLP.FinancialYearID
-	                        LEFT JOIN Security..SystemVariable SVE ON SVE.SystemVariableID = {clPolicy.EmployeeStatusID}
-	                        WHERE SV.EntityTypeID = {(int)Util.SystemVariableEntityType.LeaveCategory}";
+                            system_variable sv
+                        LEFT JOIN
+                            company_leave_policy clp ON clp.leave_category_id = sv.system_variable_id
+                            AND clp.financial_year_id = {clPolicy.FinancialYearID} 
+                            AND clp.employee_status_id = {clPolicy.EmployeeStatusID}
+                        LEFT JOIN
+                            financial_year fy ON fy.financial_year_id = {clPolicy.FinancialYearID}
+                        LEFT JOIN
+                            system_variable sve ON sve.system_variable_id = {clPolicy.EmployeeStatusID}
+                        WHERE
+                            sv.entity_type_id = {(int)Util.SystemVariableEntityType.LeaveCategory}";
             }
             else
             {
-                sql = $@"SELECT  ROW_NUMBER() OVER (
-	                        ORDER BY SystemVariableID
-                           )  CLPolicyID, 0 AS FinancialYearID, 0 AS EmployeeStatusID, SV.SystemVariableID AS LeaveCategoryID, 0 AS LeaveInDays, '' AS Remarks,SV.CompanyID, SV.SystemVariableCode AS LeaveCategoryName
-                           FROM Security..SystemVariable SV WHERE SV.EntityTypeName = 'LeaveCategory'";
+                sql = $@"SELECT
+                            ROW_NUMBER() OVER (ORDER BY system_variable_id) AS ""CLPolicyID"",
+                            0 AS ""FinancialYearID"",
+                            0 AS ""EmployeeStatusID"",
+                            sv.system_variable_id AS ""LeaveCategoryID"",
+                            0 AS ""LeaveInDays"",
+                            '' AS ""Remarks"",
+                            sv.company_id AS ""CompanyID"",
+                            sv.system_variable_code AS ""LeaveCategoryName""
+                        FROM
+                            system_variable sv
+                        WHERE
+                            sv.entity_type_name = 'LeaveCategory'";
             }
             policyList = CompanyLeavePolicyRepo.GetDataModelCollection<CompanyLeavePolicyDto>(sql);
 

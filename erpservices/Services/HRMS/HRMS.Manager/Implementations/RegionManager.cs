@@ -28,20 +28,29 @@ namespace HRMS.Manager.Implementations
 
         public async Task<IEnumerable<Dictionary<string, object>>> GetRegionListDic()
         {
-            string sql = $@"SELECT RG.*
-	                        ,CASE 
-		                        WHEN BI.RegionID IS NULL
-			                        THEN CAST(1 AS BIT)
-		                        ELSE CAST(0 AS BIT)
-		                        END IsRemovable
-                            ,ClusterName Cluster
-                        FROM Region RG
-                        LEFT JOIN Cluster C ON C.ClusterID = RG.ClusterID
-                        LEFT JOIN (
-	                        SELECT DISTINCT RegionID
-	                        FROM BranchInfo
-	                        ) BI ON RG.RegionID = BI.RegionID
-                        ORDER BY RG.RegionID DESC";
+            string sql = $@"SELECT
+                                rg.region_id AS ""RegionID"",
+                                rg.cluster_id AS ""ClusterID"",
+                                rg.region_code AS ""RegionCode"",
+                                rg.region_name AS ""RegionName"",
+                                CASE 
+                                    WHEN bi.region_id IS NULL
+                                        THEN TRUE
+                                    ELSE FALSE
+                                END AS ""IsRemovable"",
+                                c.cluster_name AS ""Cluster""
+                            FROM
+                                region rg
+                            LEFT JOIN
+                                cluster c ON c.cluster_id = rg.cluster_id
+                            LEFT JOIN (
+                                SELECT DISTINCT
+                                    region_id
+                                FROM
+                                    branch_info
+                            ) bi ON rg.region_id = bi.region_id
+                            ORDER BY
+                                rg.region_id DESC";
             var listDict = RegionRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(listDict);
@@ -51,8 +60,18 @@ namespace HRMS.Manager.Implementations
         {
 
             //var reg = RegionRepo.SingleOrDefault(x => x.RegionID == RegionID).MapTo<RegionDto>();
-            string sql = $@"SELECT Reg.*, Cl.ClusterName FROM Region Reg 
-                            LEFT JOIN Cluster Cl ON Reg.ClusterID = Cl.ClusterID WHERE Reg.RegionID={RegionID}";
+            string sql = $@"SELECT
+                                reg.region_id AS ""RegionID"",
+                                reg.cluster_id AS ""ClusterID"",
+                                reg.region_code AS ""RegionCode"",
+                                reg.region_name AS ""RegionName"",
+                                cl.cluster_name AS ""ClusterName""
+                            FROM
+                                region reg
+                            LEFT JOIN
+                                cluster cl ON reg.cluster_id = cl.cluster_id
+                            WHERE
+                                reg.region_id = {RegionID}";
 
             var reg = RegionRepo.GetData(sql);
             return await Task.FromResult(reg);

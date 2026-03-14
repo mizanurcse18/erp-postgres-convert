@@ -156,11 +156,11 @@ namespace Manager.Core
         }
         public static void SetAuditFields(EntityBase model)
         {
-            SetAuditFields(model, DateTime.Now);
+            SetAuditFields(model, DateTime.UtcNow);
         }
         public static void SetAuditFieldsOracle(EntityBase model)
         {
-            SetAuditFieldsOracle(model, DateTime.Now);
+            SetAuditFieldsOracle(model, DateTime.UtcNow);
         }
         public static void SetAuditFields(EntityBase model, DateTime dateTime)
         {

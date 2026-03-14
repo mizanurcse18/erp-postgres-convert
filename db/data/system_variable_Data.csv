@@ -1,0 +1,228 @@
+﻿SystemVariableID,EntityTypeID,EntityTypeName,SystemVariableCode,SystemVariableDescription,NumericValue,Sequence,IsSystemGenerated,IsInactive,CompanyID,CreatedBy,CreatedDate,CreatedIP,UpdatedBy,UpdatedDate,UpdatedIP,RowVersion
+1,1,Gender,Male,Male,1,1,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+2,1,Gender,Female,Female,1,2,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+3,2,Religion,Islam,Islam,1,1,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+4,2,Religion,Hindu,Hindu,1,2,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+5,3,MaritialStatus,Married,Married,1,1,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+6,3,MaritialStatus,Unmarried,Unmarried,1,2,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+7,4,BloodGroup,O+,O+,1,1,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+8,4,BloodGroup,O-,O-,1,2,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+9,5,PersonType,Employee,Employee,1,1,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+10,5,PersonType,Applicant,Applicant,1,2,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+11,2,Religion,Buddhist,Buddhist,1,3,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+12,2,Religion,Christian,Christian,1,4,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+13,4,BloodGroup,A+,A+,1,1,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+14,4,BloodGroup,B+,B+,1,1,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+15,4,BloodGroup,A-,A-,1,1,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+16,4,BloodGroup,B-,B-,1,1,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+17,4,BloodGroup,AB+,AB+,1,1,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+18,4,BloodGroup,AB-,AB-,1,1,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+19,6,EmployeeJobStatus,Permanent,Permanent,0,1,1,1,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+20,6,EmployeeJobStatus,On Process,On Process,0,2,1,1,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+21,6,EmployeeJobStatus,Probation,Probation,0,2,1,1,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+22,7,ApprovalStatus,Pending,Pending,1,1,1,0,nagad,3,05:25.5,NULL,NULL,NULL,NULL,1
+23,7,ApprovalStatus,Approved,Approved,1,2,1,0,nagad,3,05:25.5,NULL,NULL,NULL,NULL,1
+24,7,ApprovalStatus,Rejected,Rejected,1,3,1,0,nagad,3,05:25.5,NULL,NULL,NULL,NULL,1
+25,7,ApprovalStatus,Initiated,Initiated,1,4,1,0,nagad,3,05:25.5,NULL,NULL,NULL,NULL,1
+26,8,PersonAddressType,Present,Present,1,1,1,0,nagad,3,38:24.8,NULL,NULL,NULL,NULL,1
+27,8,PersonAddressType,Permanent,Permanent,1,2,1,0,nagad,3,38:24.8,NULL,NULL,NULL,NULL,1
+28,9,ReferenceType,Relative,Relative,1,1,1,0,nagad,3,33:55.9,NULL,NULL,NULL,NULL,1
+29,9,ReferenceType,Professional,Professional,1,2,1,0,nagad,3,33:55.9,NULL,NULL,NULL,NULL,1
+30,9,ReferenceType,Academic,Academic,1,3,1,0,nagad,3,33:55.9,NULL,NULL,NULL,NULL,1
+31,9,ReferenceType,FamilyFriend,Family Friend,1,4,1,0,nagad,3,33:55.9,NULL,NULL,NULL,NULL,1
+32,9,ReferenceType,Others,Others,1,5,1,0,nagad,3,33:55.9,NULL,NULL,NULL,NULL,1
+33,10,LeaveCategory,Annual Leave,Annual Leave,1,1,1,0,nagad,3,18:14.0,NULL,5008,17:51.3,172.27.112.1,2
+34,10,LeaveCategory,Casual Leave,Casual Leave,1,2,1,0,nagad,3,18:14.0,NULL,NULL,NULL,NULL,1
+35,10,LeaveCategory,Sick Leave,Sick Leave,1,3,1,0,nagad,3,18:14.0,NULL,NULL,NULL,NULL,1
+36,11,Mail_Importance,Low,Low,1,1,1,0,nagad,3,08:45.3,NULL,NULL,NULL,NULL,1
+37,11,Mail_Importance,Normal,Normal,1,2,1,0,nagad,3,08:45.3,NULL,NULL,NULL,NULL,1
+38,11,Mail_Importance,High,High,1,3,1,0,nagad,3,08:45.3,NULL,NULL,NULL,NULL,1
+39,12,Mail_Sensitivity,Normal,Normal,1,1,1,0,nagad,3,08:45.3,NULL,NULL,NULL,NULL,1
+40,12,Mail_Sensitivity,Personal,Personal,1,2,1,0,nagad,3,08:45.3,NULL,NULL,NULL,NULL,1
+41,12,Mail_Sensitivity,Private,Private,1,3,1,0,nagad,3,08:45.3,NULL,NULL,NULL,NULL,1
+42,12,Mail_Sensitivity,Confidential,Confidential,1,4,1,0,nagad,3,08:45.3,NULL,NULL,NULL,NULL,1
+43,13,WalletType,Wallet,Wallet,1,1,1,0,nagad,3,49:03.3,NULL,NULL,NULL,NULL,1
+44,14,WageCodeType,Fixed Income,Fixed Income,1,1,1,0,nagad,3,49:10.5,NULL,NULL,NULL,NULL,1
+45,14,WageCodeType,Deduction,Deduction,1,2,1,0,nagad,3,49:10.5,NULL,NULL,NULL,NULL,1
+46,14,WageCodeType,Addition,Addition,1,3,1,0,nagad,3,49:10.5,NULL,NULL,NULL,NULL,1
+47,5,PersonType,Onboarding,Onboarding,1,3,1,0,nagad,3,57:34.3,NULL,NULL,NULL,NULL,1
+48,6,EmployeeJobStatus,Discontinued,Discontinued,1,3,1,0,nagad,3,33:37.2,NULL,NULL,NULL,NULL,1
+49,6,EmployeeJobStatus,Terminated,Terminated,1,3,1,0,nagad,3,33:37.2,NULL,NULL,NULL,NULL,1
+50,15,SupervisorType,Regular,Regular,1,1,1,0,nagad,3,14:49.0,NULL,NULL,NULL,NULL,1
+51,15,SupervisorType,Dotted,Dotted,1,2,1,0,nagad,3,14:49.0,NULL,NULL,NULL,NULL,1
+52,15,SupervisorType,Delegated,Delegated,1,3,1,0,nagad,3,14:49.0,NULL,NULL,NULL,NULL,1
+53,16,NFAApprovalSequenceType,Concurred,Concurred,1,1,1,0,nagad,3,21:57.2,NULL,NULL,NULL,NULL,1
+54,16,NFAApprovalSequenceType,Approved,Approved,1,2,1,0,nagad,3,21:57.2,NULL,NULL,NULL,NULL,1
+55,16,NFAApprovalSequenceType,Prepared,Prepared,1,2,1,0,nagad,3,44:21.5,NULL,NULL,NULL,NULL,1
+56,17,NFAType,Create Strategic NFA,SCM/IT,1,1,1,0,nagad,3,18:35.2,NULL,NULL,NULL,NULL,1
+57,17,NFAType,Create NFA,Commerical,1,1,1,0,nagad,3,18:35.2,NULL,NULL,NULL,NULL,1
+58,18,EmployeeCategory,Regular,Regular,1,1,1,0,nagad,3,38:40.5,NULL,NULL,NULL,NULL,1
+59,18,EmployeeCategory,Contractual,Contractual,1,2,1,0,nagad,3,38:40.5,NULL,NULL,NULL,NULL,1
+60,18,EmployeeCategory,Director,Director,1,3,1,0,nagad,3,38:40.5,NULL,NULL,NULL,NULL,1
+61,18,EmployeeCategory,Staff,Staff,1,4,1,0,nagad,3,38:40.5,NULL,NULL,NULL,NULL,1
+62,16,NFAApprovalSequenceType,Proposed,Proposed,1,1,1,0,nagad,3,58:24.8,NULL,NULL,NULL,NULL,1
+63,16,NFAApprovalSequenceType,Reviewed,Reviewed,1,2,1,0,nagad,3,58:24.8,NULL,NULL,NULL,NULL,1
+64,16,NFAApprovalSequenceType,BudgetNote,BudgetNote,1,2,1,0,nagad,3,04:42.4,NULL,NULL,NULL,NULL,1
+65,10,LeaveCategory,Maternity Leave,Maternity Leave,1,4,1,0,nagad,3,01:07.0,NULL,503,55:19.1,172.16.202.118,2
+66,10,LeaveCategory,Special Leave,Special Leave,1,5,1,0,nagad,3,01:07.0,NULL,NULL,NULL,NULL,1
+67,10,LeaveCategory,Transit Leave,Transit Leave,1,6,1,0,nagad,3,01:07.0,NULL,NULL,NULL,NULL,1
+68,10,LeaveCategory,Pilgrim Leave,Pilgrim Leave,1,7,1,0,nagad,3,01:07.0,NULL,NULL,NULL,NULL,1
+69,10,LeaveCategory,Compensatory Leave,Compensatory Leave,1,8,1,0,nagad,3,01:07.0,NULL,NULL,NULL,NULL,1
+70,6,EmployeeJobStatus,Contractual,Contractual,0,4,1,0,nagad,3,23:41.5,NULL,NULL,NULL,NULL,1
+71,19,TravelType,Local,Local,1,1,1,0,nagad,3,25:22.4,NULL,NULL,NULL,NULL,1
+72,19,TravelType,Overseas,Overseas,1,2,1,0,nagad,3,25:22.4,NULL,NULL,NULL,NULL,1
+73,20,AttendanceStatus,Present,Present,1,1,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+74,20,AttendanceStatus,Late,Late,1,2,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+75,20,AttendanceStatus,Absent,Absent,1,3,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+76,20,AttendanceStatus,Leave,Leave,1,4,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+77,20,AttendanceStatus,Holiday,Holiday,1,5,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+78,20,AttendanceStatus,OffDay,OffDay,1,6,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+79,20,AttendanceStatus,Weekend,Weekend,1,7,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+80,20,AttendanceStatus,HolidayPresent,Holiday Present,1,8,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+81,20,AttendanceStatus,WeekendPresent,Weekend Present,1,9,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+82,20,AttendanceStatus,OffDayPresent,Off Day Present,1,10,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+83,20,AttendanceStatus,LeavePresent,Leave Present,1,11,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+84,20,AttendanceStatus,HolidayLate,Holiday Late,1,12,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+85,20,AttendanceStatus,WeekendLate,Weekend Late,1,13,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+86,20,AttendanceStatus,OffDayLate,Off Day Late,1,14,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+87,20,AttendanceStatus,LeaveLate,Leave Late,1,15,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+88,20,AttendanceStatus,PartialEntry,Partial Entry,1,16,1,0,nagad,3,41:11.7,NULL,NULL,NULL,NULL,1
+89,16,NFAApprovalSequenceType,Recommended,Recommended,1,4,1,0,nagad,3,59:59.2,NULL,NULL,NULL,NULL,1
+90,21,ExpensePurpose,Food & Entertainment,Food & Entertainment,1,1,1,0,nagad,3,10:33.6,NULL,NULL,NULL,NULL,1
+91,21,ExpensePurpose,Conveyance,Conveyance,1,2,1,0,nagad,3,10:33.6,NULL,NULL,NULL,NULL,1
+92,21,ExpensePurpose,Stationeries,Stationeries,1,3,1,0,nagad,3,10:33.6,NULL,NULL,NULL,NULL,1
+93,21,ExpensePurpose,Petty Cash Reimbursement,Petty Cash Reimbursement,1,4,1,0,nagad,3,10:33.6,NULL,NULL,NULL,NULL,1
+94,21,ExpensePurpose,Foreign Travel,Foreign Travel,1,5,1,0,nagad,3,10:33.6,NULL,NULL,NULL,NULL,1
+95,21,ExpensePurpose,Local Travel,Local Travel,1,6,1,0,nagad,3,10:33.6,NULL,NULL,NULL,NULL,1
+96,22,PaymentStatus,Payable,Payable,1,1,1,0,nagad,3,04:57.4,NULL,NULL,NULL,NULL,1
+97,22,PaymentStatus,Receivable,Receivable,1,2,1,0,nagad,3,04:57.4,NULL,NULL,NULL,NULL,1
+98,23,SupplierCategory,PO Vendor,PO Vendor,1,2,1,0,nagad,3,05:22.9,NULL,NULL,NULL,NULL,1
+99,23,SupplierCategory,Non PO Vendor,Non PO Vendor,1,2,1,0,nagad,3,05:22.9,NULL,NULL,NULL,NULL,1
+100,27,WarehouseType,Store Inventory,Store Inventory,1,1,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+101,27,WarehouseType,Sales Depot,Sales Depot,1,2,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+102,27,WarehouseType,Production Line,Production Line,1,3,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+103,27,WarehouseType,Damage Warehouse,Damage Warehouse,1,4,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+104,24,WarehouseAbleTo,Only Purchase,Only Purchase,1,1,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+105,24,WarehouseAbleTo,Only Purchase,Only Sale,1,2,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+106,24,WarehouseAbleTo,Both Purchase & Sale,Both Purchase & Sale,1,3,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+107,25,InventoryType,Inventory,Inventory,1,1,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+108,25,InventoryType,Non-Inventory,Non-Inventory,2,2,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+109,25,InventoryType,Services,Services,3,3,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+110,25,InventoryType,Asset,Asset,4,4,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+111,26,ItemAssetType,Capex,Capex,1,1,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+112,26,ItemAssetType,Opex,Opex,2,2,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+113,28,PaymentTerms,Payment will be made after 30 days after the invoice submission which duly certified by the respective user department,Payment will be made after 30 days after the invoice submission which duly certified by the respective user department,30,5,0,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+114,28,PaymentTerms,10 % Advance Payment (Payment will be made in advance),10 % Advance Payment (Payment will be made in advance)  ,10,12,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+115,28,PaymentTerms,Payment will be made after 7 days after the invoice submission which duly certified by the respective user department.,Payment will be made after 7 days after the invoice submission which duly certified by the respective user department.,7,7,0,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+116,28,PaymentTerms,Payment will be made after 15 days after the invoice submission which duly certified by the respective user department.,Payment will be made after 15 days after the invoice submission which duly certified by the respective user department.,15,8,0,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+117,28,PaymentTerms,Payment will be made after 45 days after the invoice submission which duly certified by the respective user department.,Payment will be made after 45 days after the invoice submission which duly certified by the respective user department.,45,9,0,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+118,28,PaymentTerms,Payment will be made after 60 days after the invoice submission which duly certified by the respective user department.,Payment will be made after 60 days after the invoice submission which duly certified by the respective user department.,60,10,0,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+119,28,PaymentTerms,Payment will be made after 90 days after the invoice submission which duly certified by the respective user department.,Payment will be made after 90 days after the invoice submission which duly certified by the respective user department.,90,11,0,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+120,29,InvoiceType,Debit Memo,Debit Memo,1,1,0,0,nagad,3,00:00.0,Opening,NULL,NULL,NULL,1
+121,29,InvoiceType,Credit Memo,Credit Memo,1,1,0,0,nagad,3,00:00.0,Opening,NULL,NULL,NULL,1
+122,29,InvoiceType,GRNSCC Reverse,GRNSCC Reverse,1,1,0,0,nagad,3,00:00.0,Opening,NULL,NULL,NULL,1
+123,29,InvoiceType,Standard,Standard,1,1,0,0,nagad,3,00:00.0,Opening,NULL,NULL,NULL,1
+124,28,PaymentTerms,15 % Advance Payment (Payment will be made in advance),15 % Advance Payment (Payment will be made in advance)  ,15,13,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+125,28,PaymentTerms,20 % Advance Payment (Payment will be made in advance),20 % Advance Payment (Payment will be made in advance)  ,20,14,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+126,28,PaymentTerms,25 % Advance Payment (Payment will be made in advance),25 % Advance Payment (Payment will be made in advance)  ,25,15,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+127,28,PaymentTerms,30 % Advance Payment (Payment will be made in advance),30 % Advance Payment (Payment will be made in advance)  ,30,16,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+128,28,PaymentTerms,35 % Advance Payment (Payment will be made in advance),35 % Advance Payment (Payment will be made in advance)  ,35,17,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+129,28,PaymentTerms,40 % Advance Payment (Payment will be made in advance),40 % Advance Payment (Payment will be made in advance),40,18,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+130,28,PaymentTerms,45 % Advance Payment (Payment will be made in advance),45 % Advance Payment (Payment will be made in advance),45,19,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+131,28,PaymentTerms,50 % Advance Payment (Payment will be made in advance),50 % Advance Payment (Payment will be made in advance),50,20,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+132,28,PaymentTerms,55 % Advance Payment (Payment will be made in advance),55 % Advance Payment (Payment will be made in advance),55,21,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+133,28,PaymentTerms,60 % Advance Payment (Payment will be made in advance)  ,60 % Advance Payment (Payment will be made in advance)  ,60,22,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+134,28,PaymentTerms,65 % Advance Payment (Payment will be made in advance),65 % Advance Payment (Payment will be made in advance),65,23,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+135,28,PaymentTerms,70 % Advance Payment (Payment will be made in advance),70 % Advance Payment (Payment will be made in advance),70,24,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+136,28,PaymentTerms,75 % Advance Payment (Payment will be made in advance),75 % Advance Payment (Payment will be made in advance),75,25,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+137,28,PaymentTerms,80 % Advance Payment (Payment will be made in advance),80 % Advance Payment (Payment will be made in advance),80,26,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+138,28,PaymentTerms,85 % Advance Payment (Payment will be made in advance),85 % Advance Payment (Payment will be made in advance),85,27,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+139,28,PaymentTerms,90 % Advance Payment (Payment will be made in advance),90 % Advance Payment (Payment will be made in advance),90,28,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+140,28,PaymentTerms,95 % Advance Payment (Payment will be made in advance),95 % Advance Payment (Payment will be made in advance),95,29,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+141,28,PaymentTerms,100 % Advance Payment (Payment will be made in advance),100 % Advance Payment (Payment will be made in advance),100,30,1,0,nagad,3,07:21.1,opening,NULL,NULL,NULL,1
+142,10,LeaveCategory,Paternity Leave,Paternity Leave,1,9,0,0,nagad,503,08:18.4,172.16.202.118,NULL,NULL,NULL,1
+143,30,Yes-No,Yes,Yes,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+144,30,Yes-No,No,No,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+145,31,VATTAX-Deduction-Source,VDS,VDS,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+146,31,VATTAX-Deduction-Source,TDS-SLAB,TDS-SLAB,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+147,31,VATTAX-Deduction-Source,TDS-FIXED,TDS-FIXED,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+148,31,VATTAX-Deduction-Source,TDS-BCD,TDS-BCD,1,4,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+149,31,VATTAX-Deduction-Source,TDS-AVERAGE,TDS-AVERAGE,1,5,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+150,32,Payment-Type,Bank-Payment,Bank-Payment,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+151,32,Payment-Type,E-Money Payment,E-Money Payment,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+152,33,Microsite-Category,Category,Category,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+153,33,Microsite-Category,Sub-Category,Sub-Category,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+154,33,Microsite-Category,MicroSite,MicroSite,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+155,34,Microsite-Listing-Type,External Microsite,External Microsite,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+156,34,Microsite-Listing-Type,Internal Donation Microsite,Internal Donation Microsite,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+157,21,ExpensePurpose,TransferAllowance,Transfer Allowance,1,7,1,0,nagad,3,10:33.6,NULL,NULL,NULL,NULL,1
+158,35,DocumentApprovalType,USER ID CREATION/DELETION REQUEST FORM,USER ID CREATION/DELETION REQUEST FORM,1,1,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+159,35,DocumentApprovalType,TERMINAL SERVER ACCESS REQUEST FORM,TERMINAL SERVER ACCESS REQUEST FORM,1,2,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+160,35,DocumentApprovalType,LINUX SERVER USER ACCESS REQUEST FORM,LINUX SERVER USER ACCESS REQUEST FORM,1,3,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+161,35,DocumentApprovalType,DEVICE REGISTRATION & ACCESS REQUEST FORM,DEVICE REGISTRATION & ACCESS REQUEST FORM,1,4,1,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+162,36,HRSupportCategoryType,Pay Slip,Pay Slip,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+163,36,HRSupportCategoryType,Tax Card,Tax Card,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+164,37,EmployeeAccessDeactivation,Employee Access Deactivation,Employee Access Deactivation,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+165,38,DocApprovalCategory,HR,HR,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+166,38,DocApprovalCategory,Security,Security,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+167,38,DocApprovalCategory,Accounts,Accounts,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+168,38,DocApprovalCategory,SCM,SCM,1,4,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+169,38,DocApprovalCategory,HR Support,HR Support,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+170,39,ExitInterviewApprovalSequenceType,Interview Given By,Interview Given By,1,1,1,0,nagad,3,21:57.2,NULL,NULL,NULL,NULL,1
+171,39,ExitInterviewApprovalSequenceType,Interview Taken By,Interview Taken By,1,2,1,0,nagad,3,21:57.2,NULL,NULL,NULL,NULL,1
+172,40,PaymentType,Full Payment,Full Payment,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+173,40,PaymentType,Partial Payment,Partial Payment,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+174,40,PaymentType,Deduction Or Penalty,Deduction Or Penalty,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+175,41,InvoicePaymentCategoryType,Bank Transfer,Bank Transfer,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+176,41,InvoicePaymentCategoryType,Cheque Book Payment,Cheque Book Payment,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+177,42,ALEStatus,Initiated,Initiated,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+178,42,ALEStatus,Ongoing,Ongoing,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+179,42,ALEStatus,Expired,Expired,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+180,42,ALEStatus,Closed,Closed,1,4,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+181,43,DocumentType,Tax-Return,Tax-Return,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+182,44,Budget Plan Category,Approved Budget,Approved Budget,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+183,44,Budget Plan Category,Strategic Budget,Strategic Budget,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+184,44,Budget Plan Category,Management’s Special Budget,Management’s Special Budget,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+185,45,InvoiceFileUploadCategory,Vendor Invoice,Vendor Invoice,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+186,45,InvoiceFileUploadCategory,Musok Chalan,Musok Chalan,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+187,45,InvoiceFileUploadCategory,Other (if any),Other (if any),1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+188,45,InvoiceFileUploadCategory,TIN,TIN,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+189,45,InvoiceFileUploadCategory,BIN,BIN,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+190,45,InvoiceFileUploadCategory,Tax Exemption Certificate,Tax Exemption Certificate,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+191,45,InvoiceFileUploadCategory,SRO,SRO,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+192,45,InvoiceFileUploadCategory,PSR,PSR,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+193,3,MaritialStatus,Others,Others,1,3,0,0,nagad,3,00:00.0,NULL,NULL,NULL,NULL,1
+194,6,EmployeeJobStatus,Intern,Intern,0,5,1,0,nagad,3,23:41.5,NULL,NULL,NULL,NULL,1
+195,46,AdminSupportRequestType,Consumable Goods,Consumable Goods,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+196,46,AdminSupportRequestType,Vehicle Or Transport,Vehicle Or Transport,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+197,46,AdminSupportRequestType,Facilities Or Support,Facilities Or Support,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+198,47,FacilitiesOrSupportCategory,Electric Support,Electric Support,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+199,47,FacilitiesOrSupportCategory,Cleaning Support,Cleaning Support,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+200,47,FacilitiesOrSupportCategory,Support Staff,Support Staff,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+201,47,FacilitiesOrSupportCategory,Other,Other,1,4,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+202,48,TransportType,Car,Car,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+203,48,TransportType,Microbus,Microbus,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+204,48,TransportType,Pickup,Pickup,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+205,18,EmployeeCategory,Temporary,Temporary,1,5,1,0,nagad,3,38:40.5,NULL,NULL,NULL,NULL,1
+206,36,HRSupportCategoryType,Incentive Pay Slip,Incentive Pay Slip,1,3,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+207,36,HRSupportCategoryType,Festival Bonus Pay Slip,Festival Bonus Pay Slip,1,4,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+208,49,DOA-Type,Replace,Replace,1,1,0,0,nagad,3,41:35.3,172.23.128.1,NULL,NULL,NULL,1
+209,49,DOA-Type,Proxy,Proxy,1,2,0,0,nagad,3,41:35.3,172.23.128.1,NULL,NULL,NULL,1
+210,50,DOA-Status,Active,Active,1,1,0,0,nagad,3,41:35.3,172.23.128.1,NULL,NULL,NULL,1
+211,50,DOA-Status,InActive,InActive,1,2,0,0,nagad,3,41:35.3,172.23.128.1,NULL,NULL,NULL,1
+212,50,DOA-Status,Expired,Expired,1,2,0,0,nagad,3,41:35.3,172.23.128.1,NULL,NULL,NULL,1
+213,10,LeaveCategory,Contractual Leave,Contractual Leave,1,10,1,0,nagad,3,18:14.0,NULL,NULL,NULL,NULL,1
+214,20,AttendanceStatus,Pending Leave,Pending Leave,1,17,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+215,20,AttendanceStatus,Pending Remote,Pending Remote,1,18,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+216,49,InvalidPassword,Invalid Password,Invalid Password,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+217,49,OverSystemDays,Over System Days,Over System Days,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+218,49,ManuallyLocked,Manually Locked,Over System Days,1,2,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+219,46,AdminSupportRequestType,Renovation Or Maintenance,Renovation Or Maintenance,1,4,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+220,51,Shift-Leave-Category,First Half,First Half,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+221,51,Shift-Leave-Category,Second Half,Second Half,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+222,52,Waiting for Disbursement,Waiting for Disbursement,Waiting for Disbursement,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+223,52,Waiting for Settlement,Waiting for Settlement,Waiting for Settlement,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+224,52,Waiting for Resubmit,Waiting for Resubmit,Waiting for Resubmit,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+225,52,Completed Process,Completed Process,Completed Process,1,1,0,0,nagad,3,09:27.9,172.23.128.1,NULL,NULL,NULL,1
+1000,100,MenuType,group,group,1,1,0,0,12345678910,0,00:00.0,opening,NULL,NULL,NULL,1
+1001,100,MenuType,collapse,collapse,2,2,0,0,12345678910,0,00:00.0,opening,NULL,NULL,NULL,1

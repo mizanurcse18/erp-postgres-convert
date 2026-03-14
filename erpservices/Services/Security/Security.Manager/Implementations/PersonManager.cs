@@ -104,9 +104,9 @@ namespace Security.Manager.Implementations
         }
         public async Task<List<PersonDto>> GetPersonSupervisorInfoDic(int PersonID)
         {
-            string sql = @$"select sup.*,SV.SystemVariableDescription SupervisorTypeName from HRMS..ViewEmployeeSupervisorMap sup
-                            LEFT JOIN SystemVariable SV ON sup.SupervisorType=SV.SystemVariableID
-                            where sup.PersonID='{PersonID}'";
+            string sql = $@"SELECT sup.*, sv.system_variable_description AS ""SupervisorTypeName"" FROM hrms.view_employee_supervisor_map sup
+                            LEFT JOIN system_variable sv ON sup.supervisor_type = sv.system_variable_id
+                            WHERE sup.person_id = '{PersonID}'";
 
             return PersonRepo.GetDataModelCollection<PersonDto>(sql);
         }
@@ -126,7 +126,7 @@ namespace Security.Manager.Implementations
                     filter = "";
                     break;
                 case "My Pending":
-                    filter = $@" AND CAST((SELECT Approval.[dbo].[fnValidateCurrentAPEmployee]({AppContexts.User.EmployeeID},ISNULL(AP.ApprovalProcessID, 0))) AS Bit) = 1";
+                    filter = $@" AND CAST((SELECT approval.dbo.fn_validate_current_ap_employee({AppContexts.User.EmployeeID}, COALESCE(ap.approval_process_id, 0))) AS BOOLEAN) = TRUE";
                     break;
                 case "Pending":
                     filter = $@" AND P.ApprovalStatusID = {(int)Util.ApprovalStatus.Pending}";
@@ -135,108 +135,116 @@ namespace Security.Manager.Implementations
                     filter = $@" AND P.ApprovalStatusID = {(int)Util.ApprovalStatus.Approved}";
                     break;
                 case "My Approved":
-                    filter = $@" AND AP.ApprovalProcessID IN (SELECT * FROM Approval.dbo.fnReturnApprovalProcessID({AppContexts.User.EmployeeID},{(int)Util.ApprovalFeedback.Approved}))";
+                    filter = $@" AND ap.approval_process_id IN (SELECT * FROM approval.dbo.fn_return_approval_process_id({AppContexts.User.EmployeeID},{(int)Util.ApprovalFeedback.Approved}))";
                     break;
                 case "MyRejectReturnForwarded":
-                    filter = $@" AND AP.ApprovalProcessID IN 
-                                (SELECT * FROM Approval.dbo.fnReturnApprovalProcessID({AppContexts.User.EmployeeID},{(int)Util.ApprovalFeedback.Rejected})
+                    filter = $@" AND ap.approval_process_id IN 
+                                (SELECT * FROM approval.dbo.fn_return_approval_process_id({AppContexts.User.EmployeeID},{(int)Util.ApprovalFeedback.Rejected})
                                 UNION  
-                                SELECT * FROM Approval.dbo.fnReturnApprovalProcessID({AppContexts.User.EmployeeID},{(int)Util.ApprovalFeedback.Returned})
+                                SELECT * FROM approval.dbo.fn_return_approval_process_id({AppContexts.User.EmployeeID},{(int)Util.ApprovalFeedback.Returned})
                                 UNION 
-                                SELECT * FROM Approval.dbo.fnReturnApprovalProcessID({AppContexts.User.EmployeeID},{(int)Util.ApprovalFeedback.Forwarded}))";
+                                SELECT * FROM approval.dbo.fn_return_approval_process_id({AppContexts.User.EmployeeID},{(int)Util.ApprovalFeedback.Forwarded}))";
                     break;
                 default:
                     break;
             }
             where = filter.IsNotNullOrEmpty() ? "WHERE " : "";
             string sql = $@"SELECT DISTINCT
-                             P.*
-							 ,VE.EmployeeCode
-	                         ,VE.DepartmentID
-	                         ,VE.DepartmentName
-	                         ,VE.FullName AS EmployeeName, VE.DivisionID, VE.DivisionName
-                             ,VE.FullName+VE.EmployeeCode+VE.DepartmentName EmployeeWithDepartment
-                                ,ISNULL(AP.ApprovalProcessID, 0) ApprovalProcessID
-	                            ,CAST((SELECT Approval.[dbo].[fnValidateCurrentAPEmployee]({AppContexts.User.EmployeeID},ISNULL(AP.ApprovalProcessID, 0))) AS Bit) IsCurrentAPEmployee
-	                            ,ISNULL(AEF.APEmployeeFeedbackID,0) APEmployeeFeedbackID
-	                            ,ISNULL(APForwardInfoID,0) APForwardInfoID
-								,ISNULL(AEF.IsEditable,0) IsEditable
-                                ,CASE WHEN (SELECT Approval.dbo.[fnIsAPCreator]( {AppContexts.User.EmployeeID},ISNULL(AP.ApprovalProcessID, 0))) = 1 AND EditableCount > 0 THEN CAST(1 as bit) ELSE CAST(0 as bit) END IsReassessment
-                                ,CASE WHEN ISNULL(Cntr ,0) > 0 THEN CAST(1 as bit) ELSE CAST(0 as bit) END IsReturned
-                                ,ISNULL(FeedbackLastResponseDate,CommentSubmitDate) LastActionDate
-	                            ,SV.SystemVariableCode AS ApprovalStatus                            
-                                ,CASE WHEN PendingEmployeeCode IS NOT NULL THEN (SELECT PendingEmployeeCode EmployeeCode,PendingEmployeeName EmployeeName,PendingDepartmentName DepartmentName FOR JSON PATH) END PendingAt
+                             p.*
+							 ,ve.employee_code AS ""EmployeeCode"",
+	                         ve.department_id AS ""DepartmentID"",
+	                         ve.department_name AS ""DepartmentName"",
+	                         ve.full_name AS ""EmployeeName"", 
+                             ve.division_id AS ""DivisionID"", 
+                             ve.division_name AS ""DivisionName"",
+                             ve.full_name || ve.employee_code || ve.department_name AS ""EmployeeWithDepartment""
+                                ,COALESCE(ap.approval_process_id, 0) AS ""ApprovalProcessID"",
+	                            CAST((SELECT approval.dbo.fn_validate_current_ap_employee({AppContexts.User.EmployeeID}, COALESCE(ap.approval_process_id, 0))) AS BOOLEAN) AS ""IsCurrentAPEmployee"",
+	                            COALESCE(aef.ap_employee_feedback_id, 0) AS ""APEmployeeFeedbackID"",
+	                            COALESCE(ap_forward_info_id, 0) AS ""APForwardInfoID"",
+								COALESCE(aef.is_editable, 0) AS ""IsEditable"",
+                                CASE WHEN (SELECT approval.dbo.fn_is_ap_creator({AppContexts.User.EmployeeID}, COALESCE(ap.approval_process_id, 0))) = TRUE AND editable_count > 0 THEN TRUE ELSE FALSE END AS ""IsReassessment"",
+                                CASE WHEN COALESCE(cntr, 0) > 0 THEN TRUE ELSE FALSE END AS ""IsReturned"",
+                                COALESCE(feedback_last_response_date, comment_submit_date) AS ""LastActionDate"",
+	                            sv.system_variable_code AS ""ApprovalStatus"",
+                                CASE WHEN pending_employee_code IS NOT NULL THEN (SELECT pending_employee_code AS ""EmployeeCode"", pending_employee_name AS ""EmployeeName"", pending_department_name AS ""DepartmentName"" FOR JSON PATH) END AS ""PendingAt""
 
                             FROM 
-                            EmployeeProfileApproval P
-							LEFT JOIN HRMS..ViewALLEmployee VE ON P.PersonID = VE.PersonID
-                            LEFT JOIN Security..SystemVariable SV ON SV.SystemVariableID = P.ApprovalStatusID
-                            LEFT JOIN Approval..ApprovalProcess AP ON AP.ReferenceID =  P.EPAID AND AP.APTypeID = {(int)Util.ApprovalType.EmployeeProfileApproval}
+                            employee_profile_approval p
+							LEFT JOIN hrms.view_all_employee ve ON p.person_id = ve.person_id
+                            LEFT JOIN security.system_variable sv ON sv.system_variable_id = p.approval_status_id
+                            LEFT JOIN approval.approval_process ap ON ap.reference_id = p.epaid AND ap.ap_type_id = {(int)Util.ApprovalType.EmployeeProfileApproval}
                             LEFT JOIN (
                                         SELECT 
-                                              APEmployeeFeedbackID,ApprovalProcessID,IsEditable ,IsSCM,IsMultiProxy  
+                                              ap_employee_feedback_id,
+                                              approval_process_id,
+                                              is_editable,
+                                              is_scm,
+                                              is_multi_proxy  
                                         FROM 
-                                            Approval.dbo.functionJoinListAEF({AppContexts.User.EmployeeID})
-                            )AEF ON AEF.ApprovalProcessID = AP.ApprovalProcessID
+                                            approval.dbo.function_join_list_aef({AppContexts.User.EmployeeID})
+                            ) aef ON aef.approval_process_id = ap.approval_process_id
                             LEFT JOIN 
 		                            (SELECT 
-				                            APForwardInfoID,ApprovalProcessID 
+				                            ap_forward_info_id,
+                                            approval_process_id 
 			                            FROM 
-				                            Approval..ApprovalForwardInfo  
+				                            approval.approval_forward_info  
 			                            WHERE 
-				                            EmployeeID = {AppContexts.User.EmployeeID} AND CommentSubmitDate IS NULL) 
-                            APForward ON APForward.ApprovalProcessID = AP.ApprovalProcessID
+				                            employee_id = {AppContexts.User.EmployeeID} AND comment_submit_date IS NULL) 
+                            ap_forward ON ap_forward.approval_process_id = ap.approval_process_id
                             LEFT JOIN 
 									(
-									SELECT ApprovalProcessID,EmployeeID,ProxyEmployeeID FROM Approval.dbo.functionJoinListProxyEmployeeF({AppContexts.User.EmployeeID}) 
+									SELECT approval_process_id, employee_id, proxy_employee_id FROM approval.dbo.function_join_list_proxy_employee_f({AppContexts.User.EmployeeID}) 
 									)							
-							F ON F.ApprovalProcessID = Ap.ApprovalProcessID
+							f ON f.approval_process_id = ap.approval_process_id
                             LEFT JOIN (
-										SELECT COUNT(cntr) EditableCount, ReferenceID FROM 
+										SELECT COUNT(cntr) AS editable_count, reference_id FROM 
 										(
 										SELECT 
-											COUNT(APEmployeeFeedbackID) Cntr ,ReferenceID
+											COUNT(ap_employee_feedback_id) AS cntr, reference_id
 										FROM 
-											Approval..ApprovalEmployeeFeedback  AEF
-											LEFT JOIN Approval..ApprovalProcess AP ON AP.ApprovalProcessID = AEF.ApprovalProcessID
-										where SequenceNo = 2 AND APFeedbackID = 2 AND APTypeID = {(int)Util.ApprovalType.EmployeeProfileApproval} 
-										GROUP BY ReferenceID
+											approval.approval_employee_feedback  aef
+											LEFT JOIN approval.approval_process ap ON ap.approval_process_id = aef.approval_process_id
+										WHERE sequence_no = 2 AND ap_feedback_id = 2 AND ap_type_id = {(int)Util.ApprovalType.EmployeeProfileApproval} 
+										GROUP BY reference_id
 
 										UNION ALL
 
 										SELECT 
-											COUNT(APEmployeeFeedbackID) Cntr, ReferenceID
+											COUNT(ap_employee_feedback_id) AS cntr, reference_id
 										FROM 
-											Approval..ApprovalEmployeeFeedback AEF
-											LEFT JOIN Approval..ApprovalProcess AP ON AP.ApprovalProcessID = AEF.ApprovalProcessID
-										where SequenceNo = 1 AND APFeedbackID = 2  AND APTypeID = {(int)Util.ApprovalType.EmployeeProfileApproval} AND EmployeeID = {AppContexts.User.EmployeeID}
-										GROUP BY ReferenceID
+											approval.approval_employee_feedback aef
+											LEFT JOIN approval.approval_process ap ON ap.approval_process_id = aef.approval_process_id
+										WHERE sequence_no = 1 AND ap_feedback_id = 2  AND ap_type_id = {(int)Util.ApprovalType.EmployeeProfileApproval} AND employee_id = {AppContexts.User.EmployeeID}
+										GROUP BY reference_id
 
-										)V
-										GROUP BY ReferenceID
-										) EA ON EA.ReferenceID =  P.EPAID
+										) v
+										GROUP BY reference_id
+										) ea ON ea.reference_id = p.epaid
 
                                         LEFT JOIN(
-										SELECT AP.ApprovalProcessID,COUNT(ISNULL(APFeedbackID,0)) Cntr,AP.ReferenceID 
+										SELECT ap.approval_process_id, COUNT(COALESCE(ap_feedback_id, 0)) AS cntr, ap.reference_id 
 										FROM 
-											Approval..ApprovalEmployeeFeedbackRemarks AEFR 
-											INNER JOIN Approval..ApprovalProcess AP ON AP.ApprovalProcessID = AEFR.ApprovalProcessID
-										WHERE APFeedbackID = 11 --Returned
-										GROUP BY AP.ApprovalProcessID,AP.ReferenceID 
-									) Rej ON Rej.ReferenceID =  P.EPAID
+											approval.approval_employee_feedback_remarks aefr 
+											INNER JOIN approval.approval_process ap ON ap.approval_process_id = aefr.approval_process_id
+										WHERE ap_feedback_id = 11 -- Returned
+										GROUP BY ap.approval_process_id, ap.reference_id 
+									) rej ON rej.reference_id = p.epaid
                                     LEFT JOIN (
-                                            SELECT * FROM Approval.dbo.functionJoinListProxyEmployeeAPSubmitDate({AppContexts.User.EmployeeID})                                 
-									)APSubmitDate ON APSubmitDate.ApprovalProcessID = AP.ApprovalProcessID
+                                            SELECT * FROM approval.dbo.function_join_list_proxy_employee_ap_submit_date({AppContexts.User.EmployeeID})                                 
+									) ap_submit_date ON ap_submit_date.approval_process_id = ap.approval_process_id
 									LEFT JOIN (
 													SELECT 
-													   MAX(CommentSubmitDate)  CommentSubmitDate,ApprovalProcessID 
+													   MAX(comment_submit_date) AS comment_submit_date,
+									                                              approval_process_id 
 													FROM 
-														Approval..ApprovalForwardInfo  
+														approval.approval_forward_info  
 													WHERE 
-														EmployeeID = {AppContexts.User.EmployeeID} 
-													GROUP BY ApprovalProcessID
-										
-														) APFSubmitDate ON APFSubmitDate.ApprovalProcessID = AP.ApprovalProcessID
+														employee_id = {AppContexts.User.EmployeeID} 
+													GROUP BY approval_process_id
+																				
+														) apf_submit_date ON apf_submit_date.approval_process_id = ap.approval_process_id
                                    LEFT JOIN (
 								       SELECT 
 										    AEF.EmployeeCode PendingEmployeeCode,
@@ -246,9 +254,8 @@ namespace Security.Manager.Implementations
 									    FROM 
 										    Approval..viewApprovalEmployeeFeedback AEF 
 									    WHERE AEF.APTypeID = {(int)Util.ApprovalType.EmployeeProfileApproval} AND APFeedbackID = {(int)Util.ApprovalFeedback.FeedbackRequested}
-								   )PendingAt ON  PendingAt.PendingReferenceID = P.EPAID
-							WHERE (VE.EmployeeID = {AppContexts.User.EmployeeID} OR F.EmployeeID = {AppContexts.User.EmployeeID} OR ISNULL(F.ProxyEmployeeID ,0) = {AppContexts.User.EmployeeID}) {filter}
-                            ";
+								   ) pending_at ON pending_at.pending_reference_id = p.epaid
+							WHERE (ve.employee_id = {AppContexts.User.EmployeeID} OR f.employee_id = {AppContexts.User.EmployeeID} OR COALESCE(f.proxy_employee_id, 0) = {AppContexts.User.EmployeeID}) {filter}";
             var result = PersonRepo.LoadGridModel(parameters, sql);
             return result;
         }
@@ -266,42 +273,42 @@ namespace Security.Manager.Implementations
                     break;
             }
             string sql = $@"SELECT DISTINCT
-                             P.PersonID
-                             ,P.FirstName FullName
-                             ,P.Mobile
-                             ,P.Email
-                                ,Bld.SystemVariableCode BloodGroup
-        ,ISNULL(P.Mobile + '-' + P.Email+'-'+Bld.SystemVariableCode,'') PersonMobileEmailBG
-                             ,Gen.SystemVariableCode Gender
-                             ,P.DateOfBirth
-                             ,Rel.SystemVariableCode Religion
-                             ,P.Nationality
-        ,ISNULL(Gen.SystemVariableCode+'-'+Rel.SystemVariableCode+'-'+P.Nationality, '') GenRelNationality
-                             ,usr.UserName CreatedBy
-                             ,Msts.SystemVariableCode MaritalStatus
-                             ,PrsnType.SystemVariableCode PersonType
-                             ,P.CreatedDate
-                                ,Img.ImagePath
-                                ,ISNULL(Emp.EmployeeID, 0) EmployeeID
-                                ,CASE 
-                          WHEN Emp.PersonID IS NULL
-                           THEN CAST(1 AS BIT)
-                          ELSE CAST(0 AS BIT)
-                          END IsRemovable
+                             p.person_id AS ""PersonID"",
+                             p.first_name AS ""FullName"",
+                             p.mobile AS ""Mobile"",
+                             p.email AS ""Email"",
+                                bld.system_variable_code AS ""BloodGroup"",
+                                COALESCE(p.mobile || '-' || p.email || '-' || bld.system_variable_code, '') AS ""PersonMobileEmailBG"",
+                             gen.system_variable_code AS ""Gender"",
+                             p.date_of_birth AS ""DateOfBirth"",
+                             rel.system_variable_code AS ""Religion"",
+                             p.nationality AS ""Nationality"",
+                                COALESCE(gen.system_variable_code || '-' || rel.system_variable_code || '-' || p.nationality, '') AS ""GenRelNationality"",
+                             usr.user_name AS ""CreatedBy"",
+                             msts.system_variable_code AS ""MaritalStatus"",
+                             prsn_type.system_variable_code AS ""PersonType"",
+                             p.created_date AS ""CreatedDate"",
+                                img.image_path AS ""ImagePath"",
+                                COALESCE(emp.employee_id, 0) AS ""EmployeeID"",
+                                CASE 
+                                  WHEN emp.person_id IS NULL
+                                   THEN TRUE
+                                  ELSE FALSE
+                                  END AS ""IsRemovable""
                             FROM 
-                             Person P
+                             person p
                                 LEFT JOIN (
-                             SELECT DISTINCT EmployeeID, PersonID
-                             FROM {AppContexts.GetDatabaseName(ConnectionName.HRMSContext)}..Employee
-                             ) Emp ON P.PersonID= Emp.PersonID
-                             left join SystemVariable Gen ON Gen.SystemVariableID = P.GenderID
-                             left join SystemVariable Rel ON Rel.SystemVariableID = P.ReligionID
-                             left join SystemVariable Bld ON Bld.SystemVariableID = P.BloodGroupID
-                             left join SystemVariable Msts ON Msts.SystemVariableID = P.MaritalStatusID	
-                             left join SystemVariable PrsnType ON PrsnType.SystemVariableID = P.PersonTypeID
-                             left join Users Usr ON Usr.UserID = P.CreatedBy
-                                left JOIN (SELECT ImagePath,PersonID FROM PersonImage WHERE IsFavorite=1) Img
-        ON Img.PersonID = P.PersonID {filter}";
+                             SELECT DISTINCT employee_id, person_id
+                             FROM {ConnectionName.HrmsRemote}.employee
+                             ) emp ON p.person_id = emp.person_id
+                             LEFT JOIN system_variable gen ON gen.system_variable_id = p.gender_id
+                             LEFT JOIN system_variable rel ON rel.system_variable_id = p.religion_id
+                             LEFT JOIN system_variable bld ON bld.system_variable_id = p.blood_group_id
+                             LEFT JOIN system_variable msts ON msts.system_variable_id = p.marital_status_id	
+                             LEFT JOIN system_variable prsn_type ON prsn_type.system_variable_id = p.person_type_id
+                             LEFT JOIN users usr ON usr.user_id = p.created_by
+                                LEFT JOIN (SELECT image_path, person_id FROM person_image WHERE is_favorite = TRUE) img
+                                ON img.person_id = p.person_id {filter}";
             var result = PersonRepo.LoadGridModel(parameters, sql);
             return result;
         }
@@ -309,39 +316,39 @@ namespace Security.Manager.Implementations
         public async Task<IEnumerable<Dictionary<string, object>>> GetPersonListDic()
         {
             string sql = $@"SELECT 
-	                            P.PersonID
-	                            ,P.FirstName FullName
-	                            ,P.Mobile
-	                            ,P.Email
-	                            ,Gen.SystemVariableCode Gender
-	                            ,P.DateOfBirth
-	                            ,Rel.SystemVariableCode Religion
-	                            ,P.Nationality
-	                            ,usr.UserName CreatedBy
-	                            ,Msts.SystemVariableCode MaritalStatus
-	                            ,PrsnType.SystemVariableCode PersonType
-	                            ,P.CreatedDate
-                                ,Img.ImagePath
-                                ,ISNULL(Emp.EmployeeID, 0) EmployeeID
-                                ,CASE 
-		                        WHEN Emp.PersonID IS NULL
-			                        THEN CAST(1 AS BIT)
-		                        ELSE CAST(0 AS BIT)
-		                        END IsRemovable
+	                            p.person_id AS ""PersonID"",
+	                            p.first_name AS ""FullName"",
+	                            p.mobile AS ""Mobile"",
+	                            p.email AS ""Email"",
+	                            gen.system_variable_code AS ""Gender"",
+	                            p.date_of_birth AS ""DateOfBirth"",
+	                            rel.system_variable_code AS ""Religion"",
+	                            p.nationality AS ""Nationality"",
+	                            usr.user_name AS ""CreatedBy"",
+	                            msts.system_variable_code AS ""MaritalStatus"",
+	                            prsn_type.system_variable_code AS ""PersonType"",
+	                            p.created_date AS ""CreatedDate"",
+                                img.image_path AS ""ImagePath"",
+                                COALESCE(emp.employee_id, 0) AS ""EmployeeID"",
+                                CASE 
+		                        WHEN emp.person_id IS NULL
+			                        THEN TRUE
+		                        ELSE FALSE
+		                        END AS ""IsRemovable""
                             FROM 
-	                            Person P
+	                            person p
                                 LEFT JOIN (
-	                            SELECT DISTINCT EmployeeID, PersonID
-	                            FROM {AppContexts.GetDatabaseName(ConnectionName.HRMSContext)}..Employee
-	                            ) Emp ON P.PersonID= Emp.PersonID
-	                            left join SystemVariable Gen ON Gen.SystemVariableID = P.GenderID
-	                            left join SystemVariable Rel ON Rel.SystemVariableID = P.ReligionID
-	                            left join SystemVariable Bld ON Bld.SystemVariableID = P.BloodGroupID
-	                            left join SystemVariable Msts ON Msts.SystemVariableID = P.MaritalStatusID	
-	                            left join SystemVariable PrsnType ON PrsnType.SystemVariableID = P.PersonTypeID
-	                            left join Users Usr ON Usr.UserID = P.CreatedBy
-                                left JOIN (SELECT ImagePath,PersonID FROM PersonImage WHERE IsFavorite=1) Img
-								ON Img.PersonID = P.PersonID";
+	                            SELECT DISTINCT employee_id, person_id
+	                            FROM {ConnectionName.HrmsRemote}.employee
+	                            ) emp ON p.person_id = emp.person_id
+	                            LEFT JOIN system_variable gen ON gen.system_variable_id = p.gender_id
+	                            LEFT JOIN system_variable rel ON rel.system_variable_id = p.religion_id
+	                            LEFT JOIN system_variable bld ON bld.system_variable_id = p.blood_group_id
+	                            LEFT JOIN system_variable msts ON msts.system_variable_id = p.marital_status_id	
+	                            LEFT JOIN system_variable prsn_type ON prsn_type.system_variable_id = p.person_type_id
+	                            LEFT JOIN users usr ON usr.user_id = p.created_by
+                                LEFT JOIN (SELECT image_path, person_id FROM person_image WHERE is_favorite = TRUE) img
+								ON img.person_id = p.person_id";
             var listDict = PersonRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(listDict);
@@ -350,43 +357,43 @@ namespace Security.Manager.Implementations
         public async Task<IEnumerable<Dictionary<string, object>>> GetUnemploymentListDic()
         {
             string sql = $@"SELECT 
-	                            P.PersonID
-	                            ,P.FirstName FullName
-	                            ,P.Mobile
-	                            ,P.Email
-	                            ,Gen.SystemVariableCode Gender
-	                            ,P.DateOfBirth
-	                            ,Rel.SystemVariableCode Religion
-	                            ,P.Nationality
-	                            ,usr.UserName CreatedBy
-	                            ,Msts.SystemVariableCode MaritalStatus
-	                            ,PrsnType.SystemVariableCode PersonType
-	                            ,P.CreatedDate
-                                ,Img.ImagePath
+	                            p.person_id AS ""PersonID"",
+	                            p.first_name AS ""FullName"",
+	                            p.mobile AS ""Mobile"",
+	                            p.email AS ""Email"",
+	                            gen.system_variable_code AS ""Gender"",
+	                            p.date_of_birth AS ""DateOfBirth"",
+	                            rel.system_variable_code AS ""Religion"",
+	                            p.nationality AS ""Nationality"",
+	                            usr.user_name AS ""CreatedBy"",
+	                            msts.system_variable_code AS ""MaritalStatus"",
+	                            prsn_type.system_variable_code AS ""PersonType"",
+	                            p.created_date AS ""CreatedDate"",
+                                img.image_path AS ""ImagePath""
                             FROM 
-	                            Person P
+	                            person p
 								LEFT JOIN (
-	                        SELECT DISTINCT PersonID
-	                        FROM {AppContexts.GetDatabaseName(ConnectionName.HRMSContext)}..Employee
-	                        ) Emp ON P.PersonID= Emp.PersonID
-	                            left join SystemVariable Gen ON Gen.SystemVariableID = P.GenderID
-	                            left join SystemVariable Rel ON Rel.SystemVariableID = P.ReligionID
-	                            left join SystemVariable Bld ON Bld.SystemVariableID = P.BloodGroupID
-	                            left join SystemVariable Msts ON Msts.SystemVariableID = P.MaritalStatusID	
-	                            left join SystemVariable PrsnType ON PrsnType.SystemVariableID = P.PersonTypeID
-	                            left join Users Usr ON Usr.UserID = P.CreatedBy
-                                left JOIN (SELECT ImagePath,PersonID FROM PersonImage WHERE IsFavorite=1) Img
-								ON Img.PersonID = P.PersonID
-								WHERE Emp.PersonID IS NULL";
+	                        SELECT DISTINCT person_id
+	                        FROM {ConnectionName.HrmsRemote}.employee
+	                        ) emp ON p.person_id = emp.person_id
+	                            LEFT JOIN system_variable gen ON gen.system_variable_id = p.gender_id
+	                            LEFT JOIN system_variable rel ON rel.system_variable_id = p.religion_id
+	                            LEFT JOIN system_variable bld ON bld.system_variable_id = p.blood_group_id
+	                            LEFT JOIN system_variable msts ON msts.system_variable_id = p.marital_status_id	
+	                            LEFT JOIN system_variable prsn_type ON prsn_type.system_variable_id = p.person_type_id
+	                            LEFT JOIN users usr ON usr.user_id = p.created_by
+                                LEFT JOIN (SELECT image_path, person_id FROM person_image WHERE is_favorite = TRUE) img
+								ON img.person_id = p.person_id
+								WHERE emp.person_id IS NULL";
             var listDict = PersonRepo.GetDataDictCollection(sql);
 
             return await Task.FromResult(listDict);
         }
         public async Task<Dictionary<string, object>> GetPersonInfoDic(int primaryID)
         {
-            string sql = $@"select E.*,G.JobGradeName from HRMS..ViewALLEmployee E
-                                    LEFT JOIN HRMS..JobGrade G on E.JobGradeID=G.JobGradeID
-	                            WHERE E.PersonID = {primaryID}";
+            string sql = $@"SELECT e.*, g.job_grade_name AS ""JobGradeName"" FROM hrms.view_all_employee e
+                                    LEFT JOIN hrms.job_grade g ON e.job_grade_id = g.job_grade_id
+	                            WHERE e.person_id = {primaryID}";
             var data = PersonRepo.GetData(sql);
 
             return await Task.FromResult(data);
@@ -404,71 +411,114 @@ namespace Security.Manager.Implementations
         public async Task<Dictionary<string, object>> GetPersonTableDic(int primaryID)
         {
             string sql = $@"SELECT 
-	                            P.*,
-	                            Gen.SystemVariableCode GenderName,
-	                            Rel.SystemVariableCode ReligionName,
-	                            Bld.SystemVariableCode BloodGroupName,
-	                            Msts.SystemVariableCode MaritalStatusName,
-                                sg.SystemVariableCode SpouseGenderName,
-	                            PrsnType.SystemVariableCode PersonTypeName,
-                                ISNULL(Emp.EmployeeID,0) EmployeeID,
+	                            p.person_id AS ""PersonID"", 
+	                            first_name AS ""FirstName"", 
+	                            last_name AS ""LastName"", 
+	                            mobile AS ""Mobile"", 
+	                            mobile2 AS ""Mobile2"", 
+	                            email AS ""Email"", 
+	                            gender_id AS ""GenderID"", 
+	                            date_of_birth AS ""DateOfBirth"", 
+	                            alternate_email AS ""AlternateEmail"", 
+	                            religion_id AS ""ReligionID"", 
+	                            nationality AS ""Nationality"", 
+	                            is_bangladeshi AS ""IsBangladeshi"", 
+	                            blood_group_id AS ""BloodGroupID"", 
+	                            person_type_id AS ""PersonTypeID"", 
+	                            father_name AS ""FatherName"", 
+	                            mother_name AS ""MotherName"", 
+	                            nidnumber AS ""NidNumber"", 
+	                            passport_number AS ""PassportNumber"", 
+	                            passport_issue_date AS ""PassportIssueDate"", 
+	                            passport_expiry_date AS ""PassportExpiryDate"", 
+	                            birth_certificate AS ""BirthCertificate"", 
+	                            driving_license AS ""DrivingLicense"", 
+	                            tinnumber AS ""TinNumber"", 
+	                            tax_zone AS ""TaxZone"", 
+	                            marital_status_id AS ""MaritalStatusID"", 
+	                            bangla_name AS ""BanglaName"", 
+	                            bangla_full_name AS ""BanglaFullName"", 
+	                            marriage_date AS ""MarriageDate"", 
+	                            father_dob AS ""FatherDob"", 
+	                            is_father_alive AS ""IsFatherAlive"", 
+	                            mother_dob AS ""MotherDob"", 
+	                            is_mother_alive AS ""IsMotherAlive"", 
+	                            spouse_name AS ""SpouseName"", 
+	                            spouse_dob AS ""SpouseDob"", 
+	                            spouse_gender_id AS ""SpouseGenderID"", 
+	                            marital_details AS ""MaritalDetails"", 
+	                            p.company_id AS ""CompanyID"", 
+	                            p.created_by AS ""CreatedBy"", 
+	                            p.created_date AS ""CreatedDate"", 
+	                            p.created_ip AS ""CreatedIP"", 
+	                            p.updated_by AS ""UpdatedBy"", 
+	                            p.updated_date AS ""UpdatedDate"", 
+	                            p.updated_ip AS ""UpdatedIP"", 
+	                            p.row_version AS ""RowVersion"",
+	                            gen.system_variable_code AS ""GenderName"",
+	                            rel.system_variable_code AS ""ReligionName"",
+	                            bld.system_variable_code AS ""BloodGroupName"",
+	                            msts.system_variable_code AS ""MaritalStatusName"",
+                                sg.system_variable_code AS ""SpouseGenderName"",
+	                            prsn_type.system_variable_code AS ""PersonTypeName"",
+                                COALESCE(emp.employee_id, 0) AS ""EmployeeID"",
 
-								Present.DistrictName PresentDistrictName,
-								ISNULL(Present.DistrictID, 0) PresentDistrictID,
-								Present.ThanaName PresentThanaName,
-								ISNULL(Present.ThanaID, 0) PresentThanaID,
-								Present.PostCode PresentPostCode,
-								Present.Address PresentAddress,
+								present.district_name AS ""PresentDistrictName"",
+								COALESCE(present.district_id, 0) AS ""PresentDistrictID"",
+								present.thana_name AS ""PresentThanaName"",
+								COALESCE(present.thana_id, 0) AS ""PresentThanaID"",
+								present.post_code AS ""PresentPostCode"",
+								present.address AS ""PresentAddress"",
 
-								Permanent.DistrictName PermanentDistrictName,
-								ISNULL(Permanent.DistrictID, 0) PermanentDistrictID,
-								Permanent.ThanaName PermanentThanaName,
-								ISNULL(Permanent.ThanaID, 0) PermanentThanaID,
-								Permanent.PostCode PermanentPostCode,
-								Permanent.Address PermanentAddress,
-                                ISNULL(Present.IsSameAsPresentAddress,0) IsSameAsPresentAddress,
-								CASE WHEN ISNULL(EPA.PersonID, 0) = 0 THEN 1 ELSE 0 END CanUpdateProfile
+								permanent.district_name AS ""PermanentDistrictName"",
+								COALESCE(permanent.district_id, 0) AS ""PermanentDistrictID"",
+								permanent.thana_name AS ""PermanentThanaName"",
+								COALESCE(permanent.thana_id, 0) AS ""PermanentThanaID"",
+								permanent.post_code AS ""PermanentPostCode"",
+								permanent.address AS ""PermanentAddress"",
+                                COALESCE(present.is_same_as_present_address, FALSE) AS ""IsSameAsPresentAddress"",
+								CASE WHEN COALESCE(epa.person_id, 0) = 0 THEN TRUE ELSE FALSE END AS ""CanUpdateProfile""
                             
                             FROM 
-                            Person P
-	                            left join SystemVariable Gen ON Gen.SystemVariableID = P.GenderID
-	                            left join SystemVariable Rel ON Rel.SystemVariableID = P.ReligionID
-	                            left join SystemVariable Bld ON Bld.SystemVariableID = P.BloodGroupID
-	                            left join SystemVariable sg ON sg.SystemVariableID = P.SpouseGenderID	
-	                            left join SystemVariable Msts ON Msts.SystemVariableID = P.MaritalStatusID	
-	                            left join SystemVariable PrsnType ON PrsnType.SystemVariableID = P.PersonTypeID
-                                left join {AppContexts.GetDatabaseName(ConnectionName.HRMSContext)}..Employee Emp ON P.PersonID=Emp.PersonID
-	                            left join Users Usr ON Usr.UserID = P.CreatedBy
+                            person p
+	                            LEFT JOIN system_variable gen ON gen.system_variable_id = p.gender_id
+	                            LEFT JOIN system_variable rel ON rel.system_variable_id = p.religion_id
+	                            LEFT JOIN system_variable bld ON bld.system_variable_id = p.blood_group_id
+	                            LEFT JOIN system_variable sg ON sg.system_variable_id = p.spouse_gender_id	
+	                            LEFT JOIN system_variable msts ON msts.system_variable_id = p.marital_status_id	
+	                            LEFT JOIN system_variable prsn_type ON prsn_type.system_variable_id = p.person_type_id
+                                LEFT JOIN {ConnectionName.HrmsRemote}.employee emp ON p.person_id = emp.person_id
+	                            LEFT JOIN users usr ON usr.user_id = p.created_by
 
-								left join (SELECT DISTINCT PersonID  from EmployeeProfileApproval
-									where ApprovalStatusID = 22) EPA ON EPA.PersonID = P.PersonID
+								LEFT JOIN (SELECT DISTINCT person_id FROM employee_profile_approval
+									WHERE approval_status_id = 22) epa ON epa.person_id = p.person_id
 								
-								left join (SELECT
-								PersonAddressInfo.PersonID,
-								PersonAddressInfo.DistrictID,
-								PersonAddressInfo.ThanaID,
-								PersonAddressInfo.PostCode,
-								PersonAddressInfo.Address,
-								District.DistrictName,
-								Thana.ThanaName,
-                                PersonAddressInfo.IsSameAsPresentAddress
-								FROM PersonAddressInfo
-								left join District ON PersonAddressInfo.DistrictID=District.DistrictID
-								left join Thana ON PersonAddressInfo.ThanaID=Thana.ThanaID
-								WHERE  AddressTypeID={(int)PersonAddressType.Present}) Present on Present.PersonID=P.PersonID
-								left join (SELECT 
-								PersonAddressInfo.PersonID,
-								PersonAddressInfo.DistrictID,
-								PersonAddressInfo.ThanaID,
-								PersonAddressInfo.PostCode,
-								PersonAddressInfo.Address,
-								District.DistrictName,
-								Thana.ThanaName
-								FROM PersonAddressInfo
-								left Join District ON PersonAddressInfo.DistrictID=District.DistrictID
-								left join Thana ON PersonAddressInfo.ThanaID=Thana.ThanaID
-								WHERE  AddressTypeID={(int)PersonAddressType.Permanent}) Permanent on Permanent.PersonID=P.PersonID
-	                            WHERE P.PersonID = {primaryID}";
+								LEFT JOIN (SELECT
+								person_address_info.person_id,
+								person_address_info.district_id,
+								person_address_info.thana_id,
+								person_address_info.post_code,
+								person_address_info.address,
+								district.district_name,
+								thana.thana_name,
+                                person_address_info.is_same_as_present_address
+								FROM person_address_info
+								LEFT JOIN district ON person_address_info.district_id = district.district_id
+								LEFT JOIN thana ON person_address_info.thana_id = thana.thana_id
+								WHERE address_type_id = {(int)PersonAddressType.Present}) present ON present.person_id = p.person_id
+								LEFT JOIN (SELECT 
+								person_address_info.person_id,
+								person_address_info.district_id,
+								person_address_info.thana_id,
+								person_address_info.post_code,
+								person_address_info.address,
+								district.district_name,
+								thana.thana_name
+								FROM person_address_info
+								LEFT JOIN district ON person_address_info.district_id = district.district_id
+								LEFT JOIN thana ON person_address_info.thana_id = thana.thana_id
+								WHERE address_type_id = {(int)PersonAddressType.Permanent}) permanent ON permanent.person_id = p.person_id
+	                            WHERE p.person_id = {primaryID}";
             var data = await PersonRepo.GetDataAsync(sql);
 
             return data;
@@ -918,8 +968,8 @@ namespace Security.Manager.Implementations
 
             }
 
-            string sql = $@"UPDATE HRMS..Employee SET FullName='{master.FirstName}' WHERE PersonID={master.PersonID}";
-            PersonRepo.ExecuteSqlCommand(sql);
+            //string sql = $@"UPDATE employee SET full_name='{master.FirstName}' WHERE person_id={master.PersonID}";
+            //PersonRepo.ExecuteSqlCommand(sql);
             await Task.CompletedTask;
 
             return master.MapTo<PersonDto>();
@@ -1175,7 +1225,7 @@ namespace Security.Manager.Implementations
 
             }
 
-            string sql = $@"UPDATE HRMS..Employee SET FullName='{master.FirstName}' WHERE PersonID={master.PersonID}";
+            string sql = $@"UPDATE hrms.employee SET full_name = '{master.FirstName}' WHERE person_id = {master.PersonID}";
             PersonRepo.ExecuteSqlCommand(sql);
             await Task.CompletedTask;
 
@@ -1201,100 +1251,99 @@ namespace Security.Manager.Implementations
         }
         public async Task<string> GetMediaList(int personID)
         {
-            string sql = $@"SELECT Parent.id,
-	                            Parent.name,
-	                            Parent.info,
+            string sql = $@"SELECT parent.id,
+	                            parent.name,
+	                            parent.info,
 	                            media.type,
 	                            media.title,
 	                            media.preview
                             FROM 
                             (SELECT 
-	                            Row_Number()OVER(order by name) id,
+	                            ROW_NUMBER() OVER (ORDER BY name) AS id,
 	                            name,
-	                            Cast(sum(info) as varchar) + ' Photos'info
+	                            CAST(SUM(info) AS varchar) || ' Photos' AS info
                             FROM
                             (SELECT
-	                            distinct
-	                            FORMAT(CreatedDate, 'MMMM yyyy') name,
-	                            COUNT(PIID) info
+	                            DISTINCT
+	                            TO_CHAR(created_date, 'FMMonth YYYY') AS name,
+	                            COUNT(pi_id) AS info
                             FROM 
-	                            PersonImage
-                            WHERE PersonID = {personID}
-                            GROUP BY CreatedDate
-                            )Media
+	                            person_image
+                            WHERE person_id = {personID}
+                            GROUP BY created_date
+                            ) media
                             GROUP BY name
-							)Parent
+							) parent
 							LEFT JOIN (
 							SELECT
-								FORMAT(CreatedDate, 'MMMM yyyy') name,
-								'photo' type,	
-								ImageName title,
-								ImagePath preview
+								TO_CHAR(created_date, 'FMMonth YYYY') AS name,
+								'photo' AS type,	
+								image_name AS title,
+								image_path AS preview
 							FROM 
-								PersonImage
-							WHERE PersonID = {personID} ) media ON media.name = Parent.name
-							FOR JSON AUTO";
+								person_image
+							WHERE person_id = {personID} ) media ON media.name = parent.name";
             var mediaList = PersonRepo.GetJsonData(sql);
             return await Task.FromResult(mediaList);
         }
 
         public async Task<Dictionary<string, object>> GetPersonAboutInfo(int personID)
         {
-            string sql = @$"SELECT * FROM PersonAboutInfoView WHERE PersonID = {personID}";
+            string sql = $@"SELECT * FROM person_about_info_view WHERE person_id = {personID}";
             var employee = PersonRepo.GetData(sql);
             return await Task.FromResult(employee);
         }
         public async Task<Dictionary<string, object>> GetEmployeeUpdateApproval(int EPAID)
         {
-            string sql = @$"SELECT P.*
-                            , VA.DepartmentID, VA.DepartmentName, VA.FullName AS EmployeeName, SV.SystemVariableCode AS ApprovalStatus, VA.ImagePath, VA.EmployeeCode, VA.DivisionID, VA.DivisionName ,VA.WorkMobile
-                            ,CASE  WHEN (SELECT Approval.dbo.[fnIsAPCreator]( {AppContexts.User.EmployeeID},ISNULL(AP.ApprovalProcessID, 0))) = 1 AND EditableCount > 0 THEN CAST(1 as bit) ELSE CAST(0 as bit) END IsReassessment
-							,CASE WHEN ISNULL(Cntr ,0) > 0 THEN CAST(1 as bit) ELSE CAST(0 as bit) END IsReturned
-                            FROM EmployeeProfileApproval P 
-                            LEFT JOIN HRMS..ViewAllEmployee VA ON VA.PersonID=P.PersonID
-                            LEFT JOIN {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..SystemVariable SV ON SV.SystemVariableID = P.ApprovalStatusID
-                            LEFT JOIN Approval..ApprovalProcess AP ON AP.ReferenceID = P.EPAID AND AP.APTypeID = {(int)Util.ApprovalType.EmployeeProfileApproval} 
+            string sql = $@"SELECT p.*
+                            , va.department_id AS ""DepartmentID"", va.department_name AS ""DepartmentName"", va.full_name AS ""EmployeeName"", sv.system_variable_code AS ""ApprovalStatus"", va.image_path AS ""ImagePath"", va.employee_code AS ""EmployeeCode"", va.division_id AS ""DivisionID"", va.division_name AS ""DivisionName"", va.work_mobile AS ""WorkMobile""
+                            ,CASE  WHEN (SELECT approval.dbo.fn_is_ap_creator({AppContexts.User.EmployeeID}, COALESCE(ap.approval_process_id, 0))) = TRUE AND editable_count > 0 THEN TRUE ELSE FALSE END AS ""IsReassessment""
+							,CASE WHEN COALESCE(cntr, 0) > 0 THEN TRUE ELSE FALSE END AS ""IsReturned""
+                            FROM employee_profile_approval p 
+                            LEFT JOIN hrms.view_all_employee va ON va.person_id = p.person_id
+                            LEFT JOIN system_variable sv ON sv.system_variable_id = p.approval_status_id
+                            LEFT JOIN approval.approval_process ap ON ap.reference_id = p.epaid AND ap.ap_type_id = {(int)Util.ApprovalType.EmployeeProfileApproval} 
                             LEFT JOIN (
-							    SELECT COUNT(cntr) EditableCount, ReferenceID FROM 
+							    SELECT COUNT(cntr) AS editable_count, reference_id FROM 
 							    (
 							    SELECT 
-								    COUNT(APEmployeeFeedbackID) Cntr ,ReferenceID
+								    COUNT(ap_employee_feedback_id) AS cntr, reference_id
 							    FROM 
-								    Approval..ApprovalEmployeeFeedback  AEF
-								    LEFT JOIN Approval..ApprovalProcess AP ON AP.ApprovalProcessID = AEF.ApprovalProcessID
-							    where SequenceNo = 2 AND APFeedbackID = 2 AND APTypeID = {(int)Util.ApprovalType.EmployeeProfileApproval}
-							    GROUP BY ReferenceID 
+								    approval.approval_employee_feedback aef
+								    LEFT JOIN approval.approval_process ap ON ap.approval_process_id = aef.approval_process_id
+							    WHERE sequence_no = 2 AND ap_feedback_id = 2 AND ap_type_id = {(int)Util.ApprovalType.EmployeeProfileApproval}
+							    GROUP BY reference_id 
 
 							    UNION ALL
 
 							    SELECT 
-								    COUNT(APEmployeeFeedbackID) Cntr, ReferenceID
+								    COUNT(ap_employee_feedback_id) AS cntr, reference_id
 							    FROM 
-								    Approval..ApprovalEmployeeFeedback AEF
-								    LEFT JOIN Approval..ApprovalProcess AP ON AP.ApprovalProcessID = AEF.ApprovalProcessID
-							    where SequenceNo = 1 AND APFeedbackID = 2  AND APTypeID = {(int)Util.ApprovalType.EmployeeProfileApproval} AND EmployeeID = {AppContexts.User.EmployeeID}
-							    GROUP BY ReferenceID
+								    approval.approval_employee_feedback aef
+								    LEFT JOIN approval.approval_process ap ON ap.approval_process_id = aef.approval_process_id
+							    WHERE sequence_no = 1 AND ap_feedback_id = 2 AND ap_type_id = {(int)Util.ApprovalType.EmployeeProfileApproval} AND employee_id = {AppContexts.User.EmployeeID}
+							    GROUP BY reference_id
 
-							    )V
-							    GROUP BY ReferenceID
-							    ) EA ON EA.ReferenceID = P.EPAID
+							    ) v
+							    GROUP BY reference_id
+							    ) ea ON ea.reference_id = p.epaid
 
                                 LEFT JOIN(
-							    SELECT AP.ApprovalProcessID,COUNT(ISNULL(APFeedbackID,0)) Cntr,AP.ReferenceID 
+							    SELECT ap.approval_process_id, COUNT(COALESCE(ap_feedback_id, 0)) AS cntr, ap.reference_id 
 							    FROM 
-								    Approval..ApprovalEmployeeFeedbackRemarks AEFR 
-								    INNER JOIN Approval..ApprovalProcess AP ON AP.ApprovalProcessID = AEFR.ApprovalProcessID
-							    WHERE APFeedbackID = 11 --Returned
-							    GROUP BY AP.ApprovalProcessID,AP.ReferenceID 
-						    ) Rej ON Rej.ReferenceID = P.EPAID
+								    approval.approval_employee_feedback_remarks aefr 
+								    INNER JOIN approval.approval_process ap ON ap.approval_process_id = aefr.approval_process_id
+							    WHERE ap_feedback_id = 11 -- Returned
+							    GROUP BY ap.approval_process_id, ap.reference_id 
+						    ) rej ON rej.reference_id = p.epaid
 LEFT JOIN
                                 (
-                                    SELECT ApprovalProcessID, EmployeeID, ProxyEmployeeID FROM Approval.dbo.functionJoinListProxyEmployeeF( {AppContexts.User.EmployeeID}) 
+                                    SELECT approval_process_id, employee_id, proxy_employee_id FROM approval.dbo.function_join_list_proxy_employee_f({AppContexts.User.EmployeeID}) 
 								)							
-						        F ON F.ApprovalProcessID = Ap.ApprovalProcessID
-                            WHERE P.EPAID = {EPAID} AND(VA.EmployeeID =  {AppContexts.User.EmployeeID}
-                OR F.EmployeeID =  {AppContexts.User.EmployeeID}
-                OR ISNULL(F.ProxyEmployeeID ,0) =  {AppContexts.User.EmployeeID})";
+						        f ON f.approval_process_id = ap.approval_process_id
+                            WHERE p.epaid = {EPAID} AND (va.employee_id = {AppContexts.User.EmployeeID}
+                OR f.employee_id = {AppContexts.User.EmployeeID}
+                OR COALESCE(f.proxy_employee_id, 0) = {AppContexts.User.EmployeeID})";
             var employee = await PersonRepo.GetDataAsync(sql);
             return await Task.FromResult(employee);
         }
@@ -1809,24 +1858,24 @@ LEFT JOIN
 
         public IEnumerable<Dictionary<string, object>> ReportForEPAApprovalFeedback(int EPAID)
         {
-            string sql = $@" EXEC Security..spRPTEPAApprovalFeedback {EPAID}";
+            string sql = $@"CALL security.sp_rpt_epa_approval_feedback({EPAID})";
             var feedback = PersonRepo.GetDataDictCollection(sql);
             return feedback;
         }
         public IEnumerable<Dictionary<string, object>> GetForwardingMemberComments(int APTypeID, int ReferenceID)
         {
             string sql = $@"SELECT 
-	                             FullName,
-	                             APForwardEmployeeComment,
-	                             CAST(CommentSubmitDate as Date) CommentSubmitDate,
-	                             DesignationName,
-	                             DepartmentName
+	                             full_name AS ""FullName"",
+	                             ap_forward_employee_comment AS ""APForwardEmployeeComment"",
+	                             CAST(comment_submit_date AS date) AS ""CommentSubmitDate"",
+	                             designation_name AS ""DesignationName"",
+	                             department_name AS ""DepartmentName""
                             FROM 
-	                            {AppContexts.GetDatabaseName(ConnectionName.ApprovalContext)}..ApprovalForwardInfo AEF 
-	                            INNER JOIN Approval..ApprovalProcess  AP ON AEF.ApprovalProcessID = AP.ApprovalProcessID
-	                            INNER JOIN HRMS..ViewALLEmployee VE ON VE.EmployeeID = AEF.EmployeeID	
-                            WHERE AP.APTypeID = {APTypeID} AND ReferenceID = {ReferenceID} AND CommentSubmitDate IS NOT NULL
-                            ORDER BY APForwardInfoID asc";
+	                            {ConnectionName.ApprovalRemote}.approval_forward_info aef 
+	                            INNER JOIN approval.approval_process ap ON aef.approval_process_id = ap.approval_process_id
+	                            INNER JOIN hrms.view_all_employee ve ON ve.employee_id = aef.employee_id	
+                            WHERE ap.ap_type_id = {APTypeID} AND reference_id = {ReferenceID} AND comment_submit_date IS NOT NULL
+                            ORDER BY ap_forward_info_id ASC";
             var comments = PersonRepo.GetDataDictCollection(sql);
             return comments;
         }

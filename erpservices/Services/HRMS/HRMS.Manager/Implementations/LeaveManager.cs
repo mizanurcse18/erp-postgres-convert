@@ -2166,99 +2166,178 @@ namespace HRMS.Manager.Implementations
         }
         public async Task<IEnumerable<Dictionary<string, object>>> GetLeaveDetailsForHr(int EmployeeID)
         {
-            string financialYearSql = $@"SELECT FY.FinancialYearID, FY.Year, FY.YearDescription 
-                              FROM {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..FinancialYear FY
-                              LEFT JOIN {AppContexts.GetDatabaseName(ConnectionName.HRMSContext)}..EmployeeLeaveAccount ELA ON ELA.FinancialYearID = FY.FinancialYearID 
-                              where ELA.EmployeeID = {EmployeeID}
-                              ORDER BY FY.year DESC";
+            string financialYearSql = $@"SELECT
+                                            fy.financial_year_id AS ""FinancialYearID"",
+                                            fy.year AS ""Year"",
+                                            fy.year_description AS ""YearDescription""
+                                        FROM
+                                            {ConnectionName.SecurityRemote}.financial_year fy
+                                        LEFT JOIN
+                                            employee_leave_account ela ON ela.financial_year_id = fy.financial_year_id
+                                        WHERE
+                                           ela.employee_id = {EmployeeID}
+                              ORDER BY fy.year DESC";
             IEnumerable<Dictionary<string, object>> financialYearData = EmployeeLeaveApplicationRepo.GetDataDictCollection(financialYearSql);
 
-            string leaveBalanceSql = $@"SELECT 
-                                        ELA.FinancialYearID,
-	                                    ELA.EmployeeID,
-	                                    ELA.LeaveCategoryID,
-	                                    SystemVariableCode LeaveType,
-	                                    LeaveDays,
-	                                    ApprovedDays NoOfApprovedLeaveDays,
-	                                    PendingDays NoOfPendingLeaveDays,
-	                                    RemainingDays Balance,
-	                                    PreviousLeaveDays
-                                    FROM 
-	                                    {AppContexts.GetDatabaseName(ConnectionName.HRMSContext)}..EmployeeLeaveAccount ELA
-	                                    LEFT JOIN 
-		                                    (SELECT SystemVariableID, SystemVariableCode FROM {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..SystemVariable
-		                                    ) SV ON ELA.LeaveCategoryID = SV.SystemVariableID
-	                                    LEFT JOIN ViewALLEmployee Emp ON ELA.EmployeeID=Emp.EmployeeID
-                                        LEFT JOIN Security..FinancialYear FYR ON FYR.FinancialYearID = ELA.FinancialYearID
-                                        LEFT OUTER JOIN LeavePolicySettings LPS ON LPS.LeaveCategoryID = SV.SystemVariableID
-	                                    LEFT JOIN (SELECT COUNT(*) Cntr,LeaveCategoryID,EmployeeID,Year FROM HRMS..EmployeeLeaveApplication LA 
-					                    LEFT JOIN Security..FinancialYear FY ON FY.FinancialYearID = LA.FinancialYearID where LeaveCategoryID=68 and ApprovalStatusID <> 24
-                                                   AND EmployeeLeaveAID<>0 
-                                                   group by LeaveCategoryID, EmployeeID, Year) A ON A.LeaveCategoryID = ELA.LeaveCategoryID and A.EmployeeID = ELA.EmployeeID
-	                                    WHERE (SV.SystemVariableID <> (CASE WHEN Emp.GenderID = 1 THEN  65 WHEN  Emp.GenderID = 2  THEN 142 END)) AND SV.SystemVariableID <> CASE WHEN A.LeaveCategoryID > 0 AND A.Year < FYR.Year THEN A.LeaveCategoryID Else 0 END
-    	                                        AND Emp.EmployeeTypeID NOT IN (
-		                                        SELECT _ID
-		                                        FROM dbo.fnReturnStringArray(LPS.EmployeeTypes, ',')
-		                                        ) AND ((ISNULL(LPS.TanureException,0)=1 AND ISNULL(LPS.EligibilityInMonths,0)<= DATEDIFF(MONTH, Emp.DateOfJoining, GETDATE())) OR ISNULL(LPS.TanureException,0)=0)
-                                        AND ELA.EmployeeID={EmployeeID} ORDER BY ELA.LeaveCategoryID ASC";
+            string leaveBalanceSql = $@"SELECT
+                                            ela.financial_year_id AS ""FinancialYearID"",
+                                            ela.employee_id AS ""EmployeeID"",
+                                            ela.leave_category_id AS ""LeaveCategoryID"",
+                                            sv.system_variable_code AS ""LeaveType"",
+                                            ela.leave_days AS ""LeaveDays"",
+                                            ela.approved_days AS ""NoOfApprovedLeaveDays"",
+                                            ela.pending_days AS ""NoOfPendingLeaveDays"",
+                                            ela.remaining_days AS ""Balance"",
+                                            ela.previous_leave_days AS ""PreviousLeaveDays""
+                                        FROM
+                                            employee_leave_account ela
+                                        LEFT JOIN
+                                            {ConnectionName.SecurityRemote}.system_variable sv ON ela.leave_category_id = sv.system_variable_id
+                                        LEFT JOIN
+                                            view_all_employee_for_excel emp ON ela.employee_id = emp.""EmployeeID""
+                                        LEFT JOIN
+                                            {ConnectionName.SecurityRemote}.financial_year fyr ON fyr.financial_year_id = ela.financial_year_id
+                                        LEFT JOIN
+                                            leave_policy_settings lps ON lps.leave_category_id = sv.system_variable_id
+                                        LEFT JOIN (
+                                            SELECT
+                                                COUNT(*) AS cntr,
+                                                leave_category_id,
+                                                employee_id,
+                                                fy.year
+                                            FROM
+                                                employee_leave_application la
+                                            LEFT JOIN
+                                                {ConnectionName.SecurityRemote}.financial_year fy ON fy.financial_year_id = la.financial_year_id
+                                            WHERE
+                                                la.leave_category_id = 68
+                                                AND la.approval_status_id <> 24
+                                                AND la.employee_leave_aid <> 0
+                                            GROUP BY
+                                                leave_category_id, employee_id, fy.year
+                                        ) a ON a.leave_category_id = ela.leave_category_id AND a.employee_id = ela.employee_id
+                                        WHERE
+                                            sv.system_variable_id <> (
+                                                CASE
+                                                    WHEN emp.gender_id = 1 THEN 65
+                                                    WHEN emp.gender_id = 2 THEN 142
+                                                    ELSE 0
+                                                END
+                                            )
+                                            AND sv.system_variable_id <> (
+                                                CASE
+                                                    WHEN a.leave_category_id > 0 AND a.year < fyr.year THEN a.leave_category_id
+                                                    ELSE 0
+                                                END
+                                            )
+                                            AND (
+                                                lps.employee_types IS NULL
+                                                OR emp.""EmployeeTypeID"" NOT IN (
+                                                    SELECT unnest(string_to_array(lps.employee_types, ','))::INTEGER
+                                                )
+                                            )
+                                            AND (
+                                                (COALESCE(lps.tanure_exception, FALSE) = TRUE AND COALESCE(lps.eligibility_in_months, 0) <= EXTRACT(MONTH FROM AGE(NOW(), emp.""DateOfJoining"")))
+                                                OR COALESCE(lps.tanure_exception, FALSE) = FALSE
+                                            ) AND ela.employee_id = {EmployeeID}
+                                        ORDER BY
+                                            ela.leave_category_id ASC";
 
             IEnumerable<Dictionary<string, object>> leaveBalanceData = EmployeeLeaveApplicationRepo.GetDataDictCollection(leaveBalanceSql).ToList();
 
 
-            string totalLeaveSql = $@"SELECT ELA.FinancialYearID,ELA.LeaveCategoryID,SV.SystemVariableCode LeaveType ,ELA.ApplicationDate ,ELA.RequestStartDate, ELA.RequestEndDate ,ELA.NoOfLeaveDays 
-                                    ,ELA.ApprovalStatusID, SVAS.SystemVariableCode ApprovalStatus, ELA.EmployeeLeaveAID, AP.ApprovalProcessID	
-                        FROM hrms..EmployeeLeaveApplication ELA 
-                        LEFT JOIN {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..SystemVariable SV ON SV.SystemVariableID = ELA.LeaveCategoryID
-                        LEFT JOIN {AppContexts.GetDatabaseName(ConnectionName.SecurityContext)}..SystemVariable SVAS ON ELA.ApprovalStatusID=SVAS.SystemVariableID
-                        LEFT JOIN {AppContexts.GetDatabaseName(ConnectionName.ApprovalContext)}..ApprovalProcess AP ON AP.ReferenceID = ELA.EmployeeLeaveAID AND AP.APTypeID =1
-						WHERE ELA.EmployeeID ={EmployeeID} order by ELA.ApplicationDate asc";
+            string totalLeaveSql = $@"SELECT
+                                        ela.financial_year_id AS ""FinancialYearID"",
+                                        ela.leave_category_id AS ""LeaveCategoryID"",
+                                        sv.system_variable_code AS ""LeaveType"",
+                                        ela.application_date AS ""ApplicationDate"",
+                                        ela.request_start_date AS ""RequestStartDate"",
+                                        ela.request_end_date AS ""RequestEndDate"",
+                                        ela.no_of_leave_days AS ""NoOfLeaveDays"",
+                                        ela.approval_status_id AS ""ApprovalStatusID"",
+                                        svas.system_variable_code AS ""ApprovalStatus"",
+                                        ela.employee_leave_aid AS ""EmployeeLeaveAID"",
+                                        ap.approval_process_id AS ""ApprovalProcessID""
+                                    FROM
+                                        employee_leave_application ela
+                                    LEFT JOIN
+                                        {ConnectionName.SecurityRemote}.system_variable sv ON sv.system_variable_id = ela.leave_category_id
+                                    LEFT JOIN
+                                        {ConnectionName.SecurityRemote}.system_variable svas ON ela.approval_status_id = svas.system_variable_id
+                                    LEFT JOIN
+                                        approval_remote.approval_process ap ON ap.reference_id = ela.employee_leave_aid AND ap.aptype_id = 1
+                                    WHERE
+                                        ela.employee_id = {EmployeeID}
+                                    ORDER BY
+                                        ela.application_date ASC";
             IEnumerable<Dictionary<string, object>> totalLeaveData = EmployeeLeaveApplicationRepo.GetDataDictCollection(totalLeaveSql);
 
-            string unauthorizeLeaveSql = $@"SELECT fy.FinancialYearID
-	                                            ,ats.AttendanceDate
-	                                            ,1 NoOfLeaveDays
-	                                            ,'Absent' LeaveType
-	                                            --,CASE WHEN YEAR(DateOfJoining) = fy.year then Cast(1 as bit) ELSE cast(0 as bit) END IsSameYear
-	                                            --,CASE WHEN YEAR(DiscontinueDate) = fy.year then Cast(1 as bit) ELSE cast(0 as bit) END IsDiscontinued
-	                                            ,DiscontinueDate
-                                            FROM HRMS..attendancesummary ATS
-                                            LEFT JOIN (
-                                            SELECT EmployeeID,FullName,DiscontinueDate,DATEDIFF(MONTH,DateOfJoining,ISNULL(DiscontinueDate, GETDATE())) AgeInMonth
-	                                            ,YEAR(DateOfJoining) DateOfJoingYear
-	                                            ,DateOfJoining	
-	                                            ,Case when DiscontinueDate IS NOT NULL THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END IsDiscontinued
-                                            FROM HRMS..ViewALLEmployee 
-                                            ) VAE ON VAE.EmployeeID = ATS.EmployeeID
-                                            LEFT JOIN (
-	                                            SELECT ELA.employeeleaveaid
-		                                            ,halforfullday
-		                                            ,requestdate
-		                                            ,ELA.requeststartdate
-		                                            ,ELA.requestenddate
-		                                            ,EmployeeID
-		                                            ,ELADB.noofleavedays PendingNoOfLeaveDays
-		
-	                                            FROM HRMS..employeeleaveapplicationdaybreakdown ELADB
-	                                            INNER JOIN HRMS..employeeleaveapplication ELA ON ELA.employeeleaveaid = ELADB.employeeleaveaid
-	                                            WHERE approvalstatusid = {(int)Util.ApprovalStatus.Pending}
-		                                            AND ELADB.noofleavedays > 0
-		                                            AND ELADB.iscancelled = 0
-		                                            AND ELA.EmployeeID = {EmployeeID}
-	                                            ) PendingLeave ON PendingLeave.employeeid = ATS.employeeid
-	                                            AND Cast(ATS.attendancedate AS DATE) = Cast(PendingLeave.requestdate AS DATE)
-                                            LEFT JOIN (
-                                            SELECT fyr.FinancialYearID,Year,YearDescription,Min(PeriodStartDate) StartDate,Max(PeriodStartDate) EndDate
-                                            FROM 
-                                            Security..financialyear fyr
-                                            INNER JOIN Security..Period P on p.FinancialYearID = fyr.FinancialYearID
-                                            GROUP BY Year,YearDescription,fyr.FinancialYearID
-
-                                            ) fy ON fy.Year = Year(ats.attendancedate)
-                                            WHERE attendancestatus = {(int)Util.AttendanceStatus.Absent} and PendingLeave.EmployeeID IS NULL
-	                                            AND ATS.employeeid = {EmployeeID}
-	                                            --AND ATS.AttendanceDate < ISNULL(VAE.DiscontinueDate, GETDATE())
-	                                            --AND ATS.AttendanceDate BETWEEN VAE.DateOfJoining AND ISNULL(VAE.DiscontinueDate, GETDATE())
-	                                            AND ATS.AttendanceDate between (CASE WHEN YEAR(DateOfJoining) = fy.year THEN DateOfJoining else fy.StartDate END) AND (CASE WHEN IsDiscontinued = 1 THEN DiscontinueDate ELSE FY.EndDate END)";
+            string unauthorizeLeaveSql = $@"SELECT
+                                            ""FinancialYearID"",
+                                            ats.attendance_date AS ""AttendanceDate"",
+                                            1 AS ""NoOfLeaveDays"",
+                                            'Absent' AS ""LeaveType"",
+                                            -- CASE WHEN EXTRACT(YEAR FROM vae.""DateOfJoining"") = fy.year THEN TRUE ELSE FALSE END AS ""IsSameYear"",
+                                            -- CASE WHEN EXTRACT(YEAR FROM vae.""DiscontinueDate"") = fy.year THEN TRUE ELSE FALSE END AS ""IsDiscontinued"",
+                                            vae.""DiscontinueDate""
+                                        FROM
+                                            attendance_summary ats
+                                        LEFT JOIN (
+                                            SELECT
+                                                ""EmployeeID"",
+                                                ""FullName"",
+                                                ""DiscontinueDate"",
+                                                EXTRACT(MONTH FROM AGE(COALESCE(""DiscontinueDate"", NOW()), ""DateOfJoining"")) AS ""AgeInMonth"",
+                                                EXTRACT(YEAR FROM ""DateOfJoining"") AS ""DateOfJoingYear"",
+                                                ""DateOfJoining"" AS ""DateOfJoining"",
+                                                CASE WHEN ""DiscontinueDate"" IS NOT NULL THEN TRUE ELSE FALSE END AS ""IsDiscontinued""
+                                            FROM
+                                                view_all_employee_for_excel
+                                        ) vae ON vae.""EmployeeID"" = ats.employee_id
+                                        LEFT JOIN (
+                                            SELECT
+                                                ela.employee_leave_aid,
+                                                half_or_full_day,
+                                                request_date,
+                                                ela.request_start_date,
+                                                ela.request_end_date,
+                                                employee_id,
+                                                eladb.no_of_leave_days AS ""PendingNoOfLeaveDays""
+                                            FROM
+                                                employee_leave_application_day_break_down eladb
+                                            INNER JOIN
+                                                employee_leave_application ela ON ela.employee_leave_aid = eladb.employee_leave_aid
+                                            WHERE
+                                                approval_status_id = {(int)Util.ApprovalStatus.Pending}
+                                                AND eladb.no_of_leave_days > 0
+                                                AND eladb.is_cancelled = FALSE
+                                                AND ela.employee_id = 22 -- {{EmployeeID}}
+                                        ) pending_leave ON pending_leave.employee_id = ats.employee_id
+                                            AND DATE(ats.attendance_date) = DATE(pending_leave.request_date)
+                                        LEFT JOIN (
+                                            SELECT
+                                                fyr.financial_year_id AS ""FinancialYearID"",
+                                                fyr.year,
+                                                fyr.year_description AS ""YearDescription"",
+                                                MIN(p.period_start_date) AS ""StartDate"",
+                                                MAX(p.period_start_date) AS ""EndDate""
+                                            FROM
+                                                {ConnectionName.SecurityRemote}.financial_year fyr
+                                            INNER JOIN
+                                                {ConnectionName.SecurityRemote}.period p ON p.financial_year_id = fyr.financial_year_id
+                                            GROUP BY
+                                                fyr.year, fyr.year_description, fyr.financial_year_id
+                                        ) fy ON fy.year = EXTRACT(YEAR FROM ats.attendance_date)
+                                        WHERE
+                                            ats.attendance_status = {(int)Util.AttendanceStatus.Absent}
+                                            AND pending_leave.employee_id IS NULL
+                                            AND ats.employee_id = {EmployeeID}
+                                            -- AND ats.attendance_date < COALESCE(vae.""DiscontinueDate"", NOW())
+                                            -- AND ats.attendance_date BETWEEN vae.""DateOfJoining"" AND COALESCE(vae.""DiscontinueDate"", NOW())
+                                            AND ats.attendance_date BETWEEN
+                                                (CASE WHEN EXTRACT(YEAR FROM vae.""DateOfJoining"") = fy.year THEN vae.""DateOfJoining"" ELSE fy.""StartDate"" END)
+                                                AND
+                                                (CASE WHEN vae.""IsDiscontinued"" = TRUE THEN vae.""DiscontinueDate"" ELSE fy.""EndDate"" END)";
 
             IEnumerable<Dictionary<string, object>> unauthorizeLeaveSqlLeaveData = EmployeeLeaveApplicationRepo.GetDataDictCollection(unauthorizeLeaveSql);
 
